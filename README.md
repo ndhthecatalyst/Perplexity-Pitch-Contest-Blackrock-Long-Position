@@ -107,4 +107,4 @@ Primary sources:
 
 ---
 
-*Built with Perplexity + Claude — demonstrating AI-augmented institutional-grade investment analysis.*
+*Built with Perplexity — demonstrating AI-augmented institutional-grade investment analysis.*
