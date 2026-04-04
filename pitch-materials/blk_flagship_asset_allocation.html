@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="slides-format" content="viewport" />
+  <title>BlackRock 2026 Flagship Asset Allocation Directive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-bg: #0b1220;
+      --color-bg-deep: #040814;
+      --color-surface: #162033;
+      --color-text: #f8fafc;
+      --color-text-secondary: #dbe4ef;
+      --color-text-muted: #94a3b8;
+      --color-accent-1: #d4af37;
+      --color-accent-2: #f5e6a8;
+      --color-accent-3: #7aa2ff;
+      --color-glass-bg: rgba(255,255,255,0.06);
+      --color-glass-border: rgba(255,255,255,0.10);
+      --font-display: 'Playfair Display', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+  </style>
+  <style>
+    :root { --color-bg: #0b1220; --color-text: #f8fafc; --glow-color-rgb: 212,175,55; --color-glass-bg: rgba(255,255,255,0.06); --color-glass-border: rgba(255,255,255,0.10); --color-vignette: rgba(0,0,0,0.35); }
+    *{box-sizing:border-box} html,body{margin:0;background:var(--color-bg);overflow:hidden} body{font-family:var(--font-body);color:var(--color-text);width:100vw;height:100vh}
+    .deck{width:100vw;height:100vh;position:relative}.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.965);transition:opacity .7s ease,transform .7s ease;pointer-events:none;overflow:hidden;background:var(--color-bg)}
+    .slide.active{opacity:1;transform:scale(1);pointer-events:all}.slide>.content{position:relative;z-index:2;width:100%;max-width:1160px;padding:clamp(1.4rem,3vw,3.2rem)}
+    .nav-controls{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);display:flex;align-items:center;gap:14px;z-index:100;background:var(--color-glass-bg);backdrop-filter:blur(12px);padding:10px 20px;border-radius:999px;border:1px solid var(--color-glass-border)}
+    .nav-btn{width:38px;height:38px;border:none;border-radius:999px;background:rgba(255,255,255,.06);color:#f8fafc;cursor:pointer}.slide-dots{display:flex;gap:8px}.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.18);cursor:pointer}.dot.active{background:#d4af37;transform:scale(1.25)} .slide-counter{font-size:.82rem;color:#cbd5e1;min-width:42px;text-align:center}
+    .reveal{opacity:0;transform:translateY(20px)}
+    .gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}.blob{position:absolute;border-radius:50%;filter:blur(80px);animation:float 14s ease-in-out infinite}.blob:nth-child(2){animation-duration:18s}.blob:nth-child(3){animation-duration:22s}.blob:nth-child(4){animation-duration:16s}
+    @keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-35px) scale(1.08)}} @keyframes pulseGlow{0%,100%{text-shadow:0 0 18px rgba(var(--glow-color-rgb),.35)}50%{text-shadow:0 0 36px rgba(var(--glow-color-rgb),.6)}} @keyframes floatHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    .slide:before{content:'';position:absolute;inset:0;z-index:1;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");opacity:.25;mix-blend-mode:overlay}
+    .slide:after{content:'';position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse at center,transparent 48%,var(--color-vignette) 100%)}
+    .hero-ring{width:170px;height:170px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(255,255,255,.15);background:radial-gradient(circle at 30% 30%, rgba(245,230,168,.2), rgba(122,162,255,.05));box-shadow:0 0 60px rgba(212,175,55,.18);animation:floatHero 3.8s ease-in-out infinite}
+    .kpi{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px);border-radius:24px;padding:20px 22px;box-shadow:0 18px 50px rgba(0,0,0,.18)}
+    .title-grad{background:linear-gradient(135deg,#f5e6a8 0%,#d4af37 38%,#7aa2ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .stat-glow{animation:pulseGlow 3s ease-in-out infinite}.bar-track{height:14px;border-radius:999px;background:rgba(255,255,255,.09);overflow:hidden}.bar-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#d4af37,#7aa2ff)}
+    table{width:100%;border-collapse:collapse} th,td{padding:12px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,.09);font-size:.94rem} th{color:#f5e6a8;font-weight:700}
+    .mini{font-size:.8rem;color:#94a3b8}.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-size:.82rem;color:#dbe4ef}
+    .matrix{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.quad{border-radius:22px;padding:18px 18px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)}
+    .timeline{position:relative;padding-left:28px}.timeline:before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:linear-gradient(#d4af37,#7aa2ff)}.tl{position:relative;margin:0 0 18px}.tl:before{content:'';position:absolute;left:-25px;top:6px;width:12px;height:12px;border-radius:50%;background:#d4af37;box-shadow:0 0 18px rgba(212,175,55,.65)}
+  </style>
+</head>
+<body>
+<div class="deck">
+  <section class="slide active" data-slide="1">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:420px;height:420px;top:-120px;right:-80px;background:#d4af37;opacity:.14"></div>
+      <div class="blob" style="width:320px;height:320px;left:-60px;bottom:-70px;background:#7aa2ff;opacity:.12"></div>
+      <div class="blob" style="width:240px;height:240px;left:14%;top:18%;background:#f5e6a8;opacity:.10"></div>
+      <div class="blob" style="width:210px;height:210px;right:20%;bottom:18%;background:#274472;opacity:.12"></div>
+    </div>
+    <div class="content text-center">
+      <div class="hero-ring mx-auto mb-6 reveal"><div style="font-size:76px">🏛️</div></div>
+      <div class="pill mx-auto mb-5 reveal">2026 flagship asset allocation directive • public-facing narrative artifact</div>
+      <h1 class="font-display font-black text-[clamp(2.6rem,6vw,5.2rem)] leading-[.95] title-grad tracking-tight mb-5 reveal">BlackRock as the Flagship Allocation</h1>
+      <p class="text-[clamp(1rem,1.9vw,1.35rem)] text-text-secondary max-w-[860px] mx-auto reveal">A defensible public narrative for deploying capital into the world's largest asset manager as a high-quality compounder at the intersection of ETFs, alternatives, and financial operating-system infrastructure.</p>
+      <div class="grid grid-cols-3 gap-4 mt-8 reveal">
+        <div class="kpi"><div class="mini">Current price</div><div class="text-3xl font-extrabold stat-glow">$957</div><div class="mini">April 1, 2026 close</div></div>
+        <div class="kpi"><div class="mini">Consensus upside</div><div class="text-3xl font-extrabold stat-glow">38.5%</div><div class="mini">to $1,325.9 avg PT</div></div>
+        <div class="kpi"><div class="mini">AUM</div><div class="text-3xl font-extrabold stat-glow">$14T</div><div class="mini">after record 2025 flows</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="2">
+    <div class="gradient-mesh"><div class="blob" style="width:320px;height:320px;top:-80px;right:-60px;background:#d4af37;opacity:.08"></div><div class="blob" style="width:240px;height:240px;bottom:-70px;left:-40px;background:#7aa2ff;opacity:.08"></div></div>
+    <div class="content">
+      <div class="grid grid-cols-[1.15fr_.85fr] gap-10 items-center">
+        <div>
+          <div class="pill mb-4 reveal">The allocation thesis in one sentence</div>
+          <h2 class="font-display text-[clamp(2rem,4vw,3.25rem)] font-bold mb-4 reveal">Why this is the right call now</h2>
+          <div class="space-y-4 text-lg text-text-secondary">
+            <p class="reveal">BlackRock combines the stability of a scaled fee-based asset manager with the multiple expansion potential of a technology-enabled financial platform and the growth runway of private markets.</p>
+            <p class="reveal">The stock is roughly 21.5% below its 52-week high, yet 2025 revenue rose 18.7% to $24.2B, adjusted EPS reached $48.09, and analysts remain overwhelmingly constructive.</p>
+            <p class="reveal">This makes BLK unusually well-suited for a flagship directive: it protects downside through scale, balance-sheet strength, and recurring fee revenue while offering upside from Aladdin, private credit, infrastructure, and data.</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 gap-4">
+          <div class="kpi reveal"><div class="mini">2025 revenue growth</div><div class="text-4xl font-extrabold">18.7%</div><div class="mini">$20.4B → $24.2B</div></div>
+          <div class="kpi reveal"><div class="mini">Adjusted EPS</div><div class="text-4xl font-extrabold">$48.09</div><div class="mini">vs. $43.61 in 2024</div></div>
+          <div class="kpi reveal"><div class="mini">Dividend yield</div><div class="text-4xl font-extrabold">2.23%</div><div class="mini">plus buyback support</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="3">
+    <div class="gradient-mesh"><div class="blob" style="width:330px;height:330px;top:-80px;right:-40px;background:#7aa2ff;opacity:.09"></div><div class="blob" style="width:250px;height:250px;left:-50px;bottom:-60px;background:#d4af37;opacity:.08"></div></div>
+    <div class="content">
+      <h2 class="font-display text-[clamp(2rem,4vw,3rem)] font-bold mb-6 reveal">The narrative architecture</h2>
+      <div class="grid grid-cols-2 gap-5">
+        <div class="quad reveal"><div class="mini mb-2">Pillar 1</div><div class="text-2xl font-bold mb-2">Safety through scale</div><div class="text-text-secondary">$14T AUM, broad client mix, strong liquidity, and a fee engine diversified across index, active, advisory, and technology.</div></div>
+        <div class="quad reveal"><div class="mini mb-2">Pillar 2</div><div class="text-2xl font-bold mb-2">Growth through platform breadth</div><div class="text-text-secondary">BLK is no longer just iShares; it is becoming the default whole-portfolio provider across public and private markets.</div></div>
+        <div class="quad reveal"><div class="mini mb-2">Pillar 3</div><div class="text-2xl font-bold mb-2">Re-rating through technology</div><div class="text-text-secondary">Aladdin + Preqin shifts part of the story from asset manager to mission-critical financial software and data utility.</div></div>
+        <div class="quad reveal"><div class="mini mb-2">Pillar 4</div><div class="text-2xl font-bold mb-2">Catalyst-rich in 2026</div><div class="text-text-secondary">HPS integration, GIP scaling, private credit cross-sell, and visible ACV growth create a near-term catalyst set.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="4">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-110px;right:-70px;background:#d4af37;opacity:.08"></div><div class="blob" style="width:260px;height:260px;bottom:-80px;left:-40px;background:#7aa2ff;opacity:.08"></div></div>
+    <div class="content">
+      <h2 class="font-display text-[clamp(2rem,4vw,3rem)] font-bold mb-6 reveal">What changed: BlackRock's strategic evolution</h2>
+      <div class="timeline max-w-[980px]">
+        <div class="tl reveal"><div class="text-sm uppercase tracking-[.18em] text-accent-2">Sep 2024</div><div class="text-xl font-bold">GIP acquisition closed</div><div class="text-text-secondary">BlackRock completed its acquisition of Global Infrastructure Partners, materially strengthening infrastructure and private markets capabilities.</div></div>
+        <div class="tl reveal"><div class="text-sm uppercase tracking-[.18em] text-accent-2">Mar 2025</div><div class="text-xl font-bold">Preqin acquisition closed</div><div class="text-text-secondary">Private markets data becomes part of the Aladdin stack, expanding BLK's moat from products to workflow and intelligence.</div></div>
+        <div class="tl reveal"><div class="text-sm uppercase tracking-[.18em] text-accent-2">Jul 2025</div><div class="text-xl font-bold">HPS acquisition completed</div><div class="text-text-secondary">BlackRock scaled into private credit with $148B of HPS client assets, reinforcing the firm as a whole-portfolio solutions provider.</div></div>
+        <div class="tl reveal"><div class="text-sm uppercase tracking-[.18em] text-accent-2">FY 2025</div><div class="text-xl font-bold">Record flows and technology traction</div><div class="text-text-secondary">2025 net inflows reached $698B, iShares flows hit $527B, and ACV rose 31% including Preqin.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="5">
+    <div class="gradient-mesh"><div class="blob" style="width:300px;height:300px;top:-60px;right:-40px;background:#f5e6a8;opacity:.08"></div><div class="blob" style="width:260px;height:260px;left:-40px;bottom:-50px;background:#7aa2ff;opacity:.08"></div></div>
+    <div class="content">
+      <h2 class="font-display text-[clamp(2rem,4vw,3rem)] font-bold mb-2 reveal">Financial quality that can support a flagship mandate</h2>
+      <p class="text-text-secondary mb-6 reveal">The case is not speculative growth; it is durable earnings quality plus strategic optionality.</p>
+      <div class="grid grid-cols-4 gap-4 mb-7">
+        <div class="kpi reveal"><div class="mini">FY25 revenue</div><div class="text-3xl font-extrabold">$24.2B</div></div>
+        <div class="kpi reveal"><div class="mini">FY25 net income</div><div class="text-3xl font-extrabold">$5.55B</div></div>
+        <div class="kpi reveal"><div class="mini">Adj. EBIT margin</div><div class="text-3xl font-extrabold">44.1%</div></div>
+        <div class="kpi reveal"><div class="mini">Cash & equivalents</div><div class="text-3xl font-extrabold">$11.5B</div></div>
+      </div>
+      <div class="grid grid-cols-3 gap-6 reveal">
+        <div>
+          <div class="mini mb-2">Revenue growth</div>
+          <div class="bar-track"><div class="bar-fill" data-width="74"></div></div>
+          <div class="mini mt-2">18.7% in FY2025</div>
+        </div>
+        <div>
+          <div class="mini mb-2">Consensus upside</div>
+          <div class="bar-track"><div class="bar-fill" data-width="82"></div></div>
+          <div class="mini mt-2">38.5% to average PT</div>
+        </div>
+        <div>
+          <div class="mini mb-2">Distance from 52-week high</div>
+          <div class="bar-track"><div class="bar-fill" data-width="46"></div></div>
+          <div class="mini mt-2">-21.5%, improving entry point</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="6">
+    <div class="gradient-mesh"><div class="blob" style="width:300px;height:300px;top:-70px;right:-50px;background:#d4af37;opacity:.08"></div><div class="blob" style="width:250px;height:250px;bottom:-60px;left:-50px;background:#7aa2ff;opacity:.08"></div></div>
+    <div class="content">
+      <h2 class="font-display text-[clamp(2rem,4vw,3rem)] font-bold mb-6 reveal">How sophisticated hedge funds would frame the decision</h2>
+      <div class="grid grid-cols-3 gap-5">
+        <div class="kpi reveal"><div class="mini mb-3">1. Structural screen</div><div class="text-2xl font-bold mb-2">Is the end-market expanding?</div><div class="text-text-secondary">Yes. ETFs remain a secular winner while private credit, infrastructure, and private-market data are high-growth adjacencies.</div></div>
+        <div class="kpi reveal"><div class="mini mb-3">2. Moat screen</div><div class="text-2xl font-bold mb-2">What cannot be copied?</div><div class="text-text-secondary">Aladdin, distribution breadth, institutional trust, and now a tighter data loop via Preqin create switching costs no pure-play asset manager can match.</div></div>
+        <div class="kpi reveal"><div class="mini mb-3">3. Mispricing screen</div><div class="text-2xl font-bold mb-2">Is the market underpricing the transition?</div><div class="text-text-secondary">Likely yes. BLK still trades partly as a traditional asset manager despite growing software-like and alternatives-like revenue streams.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="7">
+    <div class="gradient-mesh"><div class="blob" style="width:340px;height:340px;top:-80px;right:-60px;background:#7aa2ff;opacity:.08"></div><div class="blob" style="width:230px;height:230px;left:-40px;bottom:-40px;background:#d4af37;opacity:.08"></div></div>
+    <div class="content">
+      <h2 class="font-display text-[clamp(2rem,4vw,3rem)] font-bold mb-4 reveal">The competitive lens: BLK is not just another manager</h2>
+      <table class="reveal">
+        <thead><tr><th>Company</th><th>Market Cap</th><th>P/E</th><th>Strategic identity</th><th>Why BLK stands out</th></tr></thead>
+        <tbody>
+          <tr><td>BlackRock</td><td>$148.9B</td><td>27.1x</td><td>ETF + active + tech + alternatives</td><td>Most diversified model with operating-system attributes</td></tr>
+          <tr><td>Blackstone</td><td>$137.3B</td><td>29.5x</td><td>Pure-play alternatives</td><td>Stronger carry exposure, but less diversified and less software-like</td></tr>
+          <tr><td>Apollo</td><td>$64.0B</td><td>19.9x</td><td>Credit + insurance flywheel</td><td>Strong in private credit, weaker in public-market distribution breadth</td></tr>
+          <tr><td>KKR</td><td>$81.5B</td><td>39.0x</td><td>Alternative platforms</td><td>Higher optionality, lower stability and lower transparency of earnings mix</td></tr>
+          <tr><td>T. Rowe Price</td><td>$19.6B</td><td>9.7x</td><td>Traditional active manager</td><td>Shows the valuation ceiling for firms without BLK's platform transition</td></tr>
+        </tbody>
+      </table>
+      <p class="mini mt-3 reveal">Peer pricing highlights a crucial point: BlackRock deserves to be discussed against both high-quality traditional managers and premium alternative managers because its economics increasingly span both worlds.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="8">
+    <div class="gradient-mesh"><div class="blob" style="width:350px;height:350px;top:-100px;right:-70px;background:#d4af37;opacity:.10"></div><div class="blob" style="width:240px;height:240px;bottom:-60px;left:-40px;background:#7aa2ff;opacity:.08"></div></div>
+    <div class="content">
+      <h2 class="font-display text-[clamp(2rem,4vw,3rem)] font-bold mb-6 reveal">Public-facing thesis language</h2>
+      <div class="grid grid-cols-2 gap-6">
+        <div class="quad reveal">
+          <div class="mini mb-2">Narrative for external audiences</div>
+          <div class="text-2xl font-bold mb-3">“Quality compounder in a changing capital-markets system”</div>
+          <div class="text-text-secondary">Frame BLK as the rare institution that benefits from both the scale of indexed investing and the structural growth of private markets, while monetizing risk management and data through technology.</div>
+        </div>
+        <div class="quad reveal">
+          <div class="mini mb-2">Narrative for internal IC defense</div>
+          <div class="text-2xl font-bold mb-3">“A low-regret flagship”</div>
+          <div class="text-text-secondary">Even if markets become more volatile, BLK remains supported by scale, cash generation, institutional relevance, and a strategic roadmap that does not depend on a single macro outcome.</div>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-4 mt-6">
+        <div class="kpi reveal"><div class="mini">Avoid saying</div><div class="text-xl font-bold mt-1">“Bet on markets going up”</div></div>
+        <div class="kpi reveal"><div class="mini">Say instead</div><div class="text-xl font-bold mt-1">“Own the toll road of capital formation”</div></div>
+        <div class="kpi reveal"><div class="mini">Public tone</div><div class="text-xl font-bold mt-1">Institutional, measured, fiduciary</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="9">
+    <div class="gradient-mesh"><div class="blob" style="width:340px;height:340px;top:-100px;right:-50px;background:#7aa2ff;opacity:.09"></div><div class="blob" style="width:220px;height:220px;left:-40px;bottom:-50px;background:#f5e6a8;opacity:.09"></div></div>
+    <div class="content">
+      <h2 class="font-display text-[clamp(2rem,4vw,3rem)] font-bold mb-6 reveal">The risk section that makes the pitch credible</h2>
+      <div class="matrix">
+        <div class="quad reveal"><div class="text-xl font-bold mb-2">Market beta risk</div><div class="text-text-secondary">AUM-linked businesses still feel equity and bond market drawdowns. The mitigation is diversified product mix and rising non-market-sensitive technology revenue.</div></div>
+        <div class="quad reveal"><div class="text-xl font-bold mb-2">Integration risk</div><div class="text-text-secondary">GIP, Preqin, and HPS must be integrated without diluting culture or execution. The answer is to acknowledge the risk and argue that this is precisely why the stock has not fully re-rated.</div></div>
+        <div class="quad reveal"><div class="text-xl font-bold mb-2">Fee pressure</div><div class="text-text-secondary">ETF fee compression is real, but BLK's answer is breadth: private credit, infrastructure, active ETFs, advisory, and tech.</div></div>
+        <div class="quad reveal"><div class="text-xl font-bold mb-2">Valuation debate</div><div class="text-text-secondary">At 27.1x GAAP P/E, skeptics will say BLK is expensive. The rebuttal is that adjusted earnings and platform mix justify a premium to legacy managers.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="10">
+    <div class="gradient-mesh"><div class="blob" style="width:350px;height:350px;top:-90px;right:-70px;background:#d4af37;opacity:.12"></div><div class="blob" style="width:270px;height:270px;left:-40px;bottom:-60px;background:#7aa2ff;opacity:.10"></div></div>
+    <div class="content text-center">
+      <div class="pill mx-auto mb-5 reveal">Execution plan with Perplexity</div>
+      <h2 class="font-display text-[clamp(2.2rem,5vw,4rem)] font-bold title-grad mb-6 reveal">How to build the public artifact</h2>
+      <div class="grid grid-cols-4 gap-4 text-left">
+        <div class="kpi reveal"><div class="mini mb-2">Perplexity Deep Research</div><div class="text-xl font-bold mb-2">Evidence base</div><div class="text-text-secondary">Pull current financials, strategic milestones, and contrary viewpoints to make the story defensible.</div></div>
+        <div class="kpi reveal"><div class="mini mb-2">Perplexity Computer</div><div class="text-xl font-bold mb-2">Public artifact</div><div class="text-text-secondary">Create a branded slide deck, visual memo, or microsite with interactive narrative flow for stakeholder distribution.</div></div>
+        <div class="kpi reveal"><div class="mini mb-2">Finance data tools</div><div class="text-xl font-bold mb-2">Valuation rigor</div><div class="text-text-secondary">Cite quote, EPS, growth, and peer comp metrics directly into the presentation and memo.</div></div>
+        <div class="kpi reveal"><div class="mini mb-2">Iteration loop</div><div class="text-xl font-bold mb-2">Pressure test</div><div class="text-text-secondary">Run bull, base, bear cases and refine language until the thesis survives hostile questioning.</div></div>
+      </div>
+      <p class="text-text-secondary mt-8 max-w-[900px] mx-auto reveal">Best practice: publish two artifacts, a public-facing flagship deck for broad stakeholders and a supporting IC memo for internal decision-makers using the same data spine but different levels of disclosure.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-slide="11">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:420px;height:420px;top:-120px;right:-80px;background:#d4af37;opacity:.14"></div>
+      <div class="blob" style="width:320px;height:320px;left:-60px;bottom:-70px;background:#7aa2ff;opacity:.12"></div>
+      <div class="blob" style="width:220px;height:220px;left:16%;top:20%;background:#f5e6a8;opacity:.10"></div>
+    </div>
+    <div class="content text-center">
+      <div class="hero-ring mx-auto mb-6 reveal"><div style="font-size:70px">📈</div></div>
+      <h2 class="font-display text-[clamp(2.4rem,5.4vw,4.4rem)] font-bold title-grad mb-4 reveal">Directive: Make BLK the flagship allocation</h2>
+      <p class="text-[clamp(1rem,1.8vw,1.28rem)] text-text-secondary max-w-[820px] mx-auto reveal">The strongest public case is simple: allocate to the manager best positioned to benefit from the future shape of asset management, not just the present size of it.</p>
+      <div class="grid grid-cols-3 gap-4 mt-8 reveal">
+        <div class="kpi"><div class="mini">Defensible</div><div class="text-2xl font-extrabold">Yes</div><div class="mini">quality, data, and catalysts</div></div>
+        <div class="kpi"><div class="mini">Public-facing</div><div class="text-2xl font-extrabold">Ready</div><div class="mini">slides + PPT for distribution</div></div>
+        <div class="kpi"><div class="mini">Next step</div><div class="text-2xl font-extrabold">IC memo</div><div class="mini">turn this into final committee format</div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 11</span>
+</div>
+
+<script>
+let current=1;const total=document.querySelectorAll('.slide').length;const dots=document.getElementById('dots');const counter=document.getElementById('counter');for(let i=1;i<=total;i++){const d=document.createElement('div');d.className='dot'+(i===1?' active':'');d.onclick=()=>goToSlide(i);dots.appendChild(d)}
+function updateNav(){document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i+1===current));counter.textContent=`${current} / ${total}`}
+function goToSlide(n){document.querySelector('.slide.active')?.classList.remove('active');const next=document.querySelector(`.slide[data-slide="${n}"]`);if(next){next.classList.add('active');animateSlide(next)}current=n;updateNav()}
+function changeSlide(dir){let n=current+dir;if(n<1)n=total;if(n>total)n=1;goToSlide(n)}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();changeSlide(1)} if(e.key==='ArrowLeft'){e.preventDefault();changeSlide(-1)}})
+let sx=0;document.addEventListener('touchstart',e=>sx=e.touches[0].clientX);document.addEventListener('touchend',e=>{const diff=sx-e.changedTouches[0].clientX;if(Math.abs(diff)>50)changeSlide(diff>0?1:-1)})
+function animateSlide(slide){slide.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transition='none';el.style.opacity='0';el.style.transform='translateY(20px)';el.offsetHeight;const delay=i*.08;el.style.transition=`opacity .45s ease ${delay}s, transform .45s ease ${delay}s`;el.style.opacity='1';el.style.transform='translateY(0)'})
+slide.querySelectorAll('.bar-fill').forEach((el,i)=>{el.style.width='0';el.style.transition=`width .8s ease ${.25+i*.12}s`;el.offsetHeight;el.style.width=(el.dataset.width||0)+'%'})}
+animateSlide(document.querySelector('.slide.active'));
+</script>
+</body>
+</html>
