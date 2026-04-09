@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlackRock (BLK) — Long Equity Thesis | Institutional Investment Memorandum · April 8, 2026</title>
+<meta name="description" content="BlackRock (NYSE: BLK) Executive Brief — Long Equity Thesis. Institutional Investment Memorandum prepared by Nicholas Hawkins / Hawkins Holdings for the Perplexity Stock Pitch Competition 2026.">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════════════════════════
+   DESIGN TOKENS — matches blk-intelligence-dashboard
+══════════════════════════════════════════════════════════ */
+:root, [data-theme="light"] {
+  --bg:              #ededea;
+  --page-bg:         #faf9f6;
+  --surface:         #faf9f6;
+  --surface-2:       #f2f0ec;
+  --surface-3:       #ebe9e4;
+  --text:            #1a1914;
+  --text-muted:      #5a5750;
+  --text-faint:      #9a978f;
+  --gold:            #b07a00;
+  --gold-mid:        #c98a2a;
+  --gold-bg:         rgba(176,122,0,0.08);
+  --teal:            #01696f;
+  --teal-bg:         rgba(1,105,111,0.08);
+  --success:         #3a6e1a;
+  --success-bg:      rgba(58,110,26,0.09);
+  --error:           #b52c38;
+  --error-bg:        rgba(181,44,56,0.09);
+  --warning:         #8a5a00;
+  --warning-bg:      rgba(138,90,0,0.09);
+  --border:          rgba(26,25,20,0.09);
+  --border-strong:   rgba(26,25,20,0.16);
+  --shadow-page:     0 2px 4px rgba(26,25,20,0.06), 0 8px 32px rgba(26,25,20,0.08);
+
+  --font-display:    'Instrument Serif', Georgia, serif;
+  --font-body:       'Satoshi', system-ui, sans-serif;
+  --font-mono:       'JetBrains Mono', 'Fira Code', monospace;
+
+  --page-w:          794px;
+  --page-pad:        52px;
+  --page-pad-v:      48px;
+}
+
+[data-theme="dark"] {
+  --bg:              #0a0908;
+  --page-bg:         #0f0e0c;
+  --surface:         #161513;
+  --surface-2:       #1d1c19;
+  --surface-3:       #232118;
+  --text:            #e8e5df;
+  --text-muted:      #8a877e;
+  --text-faint:      #524f48;
+  --gold:            #d19900;
+  --gold-mid:        #c98a2a;
+  --gold-bg:         rgba(209,153,0,0.10);
+  --teal:            #4f98a3;
+  --teal-bg:         rgba(79,152,163,0.10);
+  --success:         #6daa45;
+  --success-bg:      rgba(109,170,69,0.10);
+  --error:           #dd6974;
+  --error-bg:        rgba(221,105,116,0.10);
+  --warning:         #c98a2a;
+  --warning-bg:      rgba(201,138,42,0.10);
+  --border:          rgba(232,229,223,0.09);
+  --border-strong:   rgba(232,229,223,0.16);
+  --shadow-page:     0 4px 32px rgba(0,0,0,0.45);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #0a0908; --page-bg: #0f0e0c; --surface: #161513; --surface-2: #1d1c19;
+    --surface-3: #232118; --text: #e8e5df; --text-muted: #8a877e; --text-faint: #524f48;
+    --gold: #d19900; --gold-mid: #c98a2a; --gold-bg: rgba(209,153,0,0.10);
+    --teal: #4f98a3; --teal-bg: rgba(79,152,163,0.10); --success: #6daa45;
+    --success-bg: rgba(109,170,69,0.10); --error: #dd6974; --error-bg: rgba(221,105,116,0.10);
+    --warning: #c98a2a; --warning-bg: rgba(201,138,42,0.10);
+    --border: rgba(232,229,223,0.09); --border-strong: rgba(232,229,223,0.16);
+    --shadow-page: 0 4px 32px rgba(0,0,0,0.45);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background .28s ease, color .28s ease;
+}
+a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+a:hover { opacity: .75; }
+
+/* ══════════════════════════════════════════════════════════
+   TOOLBAR (SCREEN ONLY)
+══════════════════════════════════════════════════════════ */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  height: 52px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  gap: 12px;
+}
+.toolbar-left { display: flex; align-items: center; gap: 12px; }
+.toolbar-logo {
+  font-family: var(--font-mono);
+  font-size: .8125rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--gold);
+  border: 1.5px solid rgba(176,122,0,.38);
+  padding: 3px 9px;
+  border-radius: 5px;
+  line-height: 1;
+}
+[data-theme="dark"] .toolbar-logo { border-color: rgba(209,153,0,.38); }
+.toolbar-meta {
+  font-size: .75rem;
+  color: var(--text-faint);
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+.toolbar-meta strong { color: var(--text-muted); font-weight: 600; }
+.toolbar-actions { display: flex; align-items: center; gap: 8px; }
+.btn-tb {
+  font-family: var(--font-body);
+  font-size: .6875rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  transition: all .18s ease;
+}
+.btn-tb:hover { background: var(--surface-2); color: var(--text); }
+.btn-print {
+  background: var(--gold);
+  color: #fff !important;
+  border-color: var(--gold);
+}
+[data-theme="dark"] .btn-print { color: #0f0e0c !important; }
+.btn-print:hover { opacity: .85; background: var(--gold); }
+
+/* ══════════════════════════════════════════════════════════
+   DOCUMENT WRAPPER
+══════════════════════════════════════════════════════════ */
+.doc-wrap {
+  padding: 40px 20px 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PAGE SHEETS
+══════════════════════════════════════════════════════════ */
+.page {
+  width: var(--page-w);
+  max-width: 100%;
+  background: var(--surface);
+  box-shadow: var(--shadow-page);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gold top rule */
+.page::before {
+  content: '';
+  display: block;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold-mid) 45%, transparent 100%);
+}
+
+.page-inner {
+  padding: var(--page-pad-v) var(--page-pad);
+  padding-bottom: 44px;
+}
+
+/* Page number stamp */
+.page-stamp {
+  position: absolute;
+  bottom: 16px;
+  right: var(--page-pad);
+  font-family: var(--font-mono);
+  font-size: .5625rem;
+  color: var(--text-faint);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PAGE 1 — MEMO HEADER
+══════════════════════════════════════════════════════════ */
+.memo-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border-strong);
+  margin-bottom: 26px;
+}
+
+.memo-logo-wrap { flex-shrink: 0; padding-top: 2px; }
+.memo-logo {
+  font-family: var(--font-mono);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  color: var(--gold);
+  border: 2px solid rgba(176,122,0,.32);
+  padding: 7px 16px;
+  border-radius: 6px;
+  display: inline-block;
+  line-height: 1;
+}
+[data-theme="dark"] .memo-logo { border-color: rgba(209,153,0,.35); }
+
+.memo-title-block { flex: 1; }
+.memo-doc-type {
+  font-family: var(--font-mono);
+  font-size: .5625rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 5px;
+}
+.memo-h1 {
+  font-family: var(--font-display);
+  font-size: 1.5625rem;
+  font-weight: 400;
+  line-height: 1.18;
+  color: var(--text);
+  letter-spacing: -.02em;
+  margin-bottom: 6px;
+}
+.memo-h1 em { font-style: italic; color: var(--gold); }
+.memo-subtitle {
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.memo-prepared {
+  font-size: .6875rem;
+  color: var(--text-faint);
+  line-height: 1.45;
+}
+.memo-prepared strong { color: var(--text-muted); font-weight: 600; }
+
+/* ══════════════════════════════════════════════════════════
+   KPI STRIP
+══════════════════════════════════════════════════════════ */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr 1px 1fr;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+.kpi-sep {
+  background: var(--border);
+  width: 1px;
+}
+.kpi-cell {
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.kpi-v {
+  font-family: var(--font-mono);
+  font-size: 1.4375rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: -.01em;
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: 1;
+}
+.kpi-v.up { color: var(--success); }
+.kpi-lbl {
+  font-size: .625rem;
+  font-weight: 700;
+  color: var(--text-faint);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════════════════════
+   THESIS STATEMENTS
+══════════════════════════════════════════════════════════ */
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: .5625rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.thesis-paras { display: flex; flex-direction: column; gap: 22px; }
+
+.thesis-para { display: flex; gap: 18px; align-items: flex-start; }
+
+.tp-num {
+  font-family: var(--font-mono);
+  font-size: .5625rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: .1em;
+  padding-top: 4px;
+  flex-shrink: 0;
+  width: 20px;
+}
+
+.tp-body {}
+.tp-lead {
+  font-size: .625rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+.tp-text {
+  font-size: .9375rem;
+  line-height: 1.68;
+  color: var(--text);
+  font-weight: 400;
+  max-width: 66ch;
+}
+.tp-text strong { font-weight: 700; color: var(--text); }
+
+/* ══════════════════════════════════════════════════════════
+   PAGE 2 — HEADER
+══════════════════════════════════════════════════════════ */
+.p2-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-strong);
+  margin-bottom: 26px;
+}
+.p2-logo {
+  font-family: var(--font-mono);
+  font-size: .875rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  color: var(--gold);
+  border: 1.5px solid rgba(176,122,0,.32);
+  padding: 4px 12px;
+  border-radius: 5px;
+  line-height: 1;
+}
+[data-theme="dark"] .p2-logo { border-color: rgba(209,153,0,.35); }
+.p2-title {
+  font-family: var(--font-display);
+  font-size: 1.1875rem;
+  color: var(--text-muted);
+  font-style: italic;
+  letter-spacing: -.01em;
+}
+
+/* ══════════════════════════════════════════════════════════
+   DATA CARDS GRID
+══════════════════════════════════════════════════════════ */
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.d-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 14px 16px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.d-card-v {
+  font-family: var(--font-mono);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: -.01em;
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: 1.1;
+}
+.d-card-v.tl { color: var(--teal); }
+.d-card-v.gr { color: var(--success); }
+.d-card-lbl {
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+.d-card-sub {
+  font-size: .625rem;
+  color: var(--text-faint);
+  font-weight: 400;
+  margin-top: 1px;
+  line-height: 1.35;
+}
+
+/* ══════════════════════════════════════════════════════════
+   RISK SUMMARY
+══════════════════════════════════════════════════════════ */
+.risk-block {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 16px 20px;
+  margin-bottom: 26px;
+}
+.risk-hd {
+  font-family: var(--font-mono);
+  font-size: .5625rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 12px;
+}
+.risk-rows { display: flex; flex-direction: column; gap: 9px; }
+.risk-row {
+  display: grid;
+  grid-template-columns: 150px 1fr auto;
+  align-items: baseline;
+  gap: 12px;
+  font-size: .8125rem;
+  line-height: 1.45;
+}
+.rk-name {
+  font-weight: 700;
+  color: var(--text);
+  font-size: .8125rem;
+}
+.rk-mit { color: var(--text-muted); font-weight: 400; }
+.rk-tag {
+  font-family: var(--font-mono);
+  font-size: .5rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.rk-medium { background: var(--warning-bg); color: var(--warning); }
+.rk-high   { background: var(--error-bg);   color: var(--error); }
+.rk-low    { background: var(--success-bg); color: var(--success); }
+
+/* ══════════════════════════════════════════════════════════
+   DOCUMENT FOOTER
+══════════════════════════════════════════════════════════ */
+.doc-footer {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.footer-txt {
+  font-size: .625rem;
+  color: var(--text-faint);
+  line-height: 1.65;
+}
+.footer-txt .brand { color: var(--gold); font-weight: 700; }
+.footer-txt a { color: var(--text-faint); }
+
+/* ══════════════════════════════════════════════════════════
+   PRINT STYLES
+══════════════════════════════════════════════════════════ */
+@media print {
+  @page { size: A4; margin: 14mm 18mm 16mm; }
+
+  html, body { background: #fff !important; }
+
+  .toolbar { display: none !important; }
+  .doc-wrap { padding: 0 !important; gap: 0 !important; }
+
+  .page {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    page-break-after: always;
+    break-after: page;
+  }
+  .page:last-of-type { page-break-after: auto; break-after: auto; }
+  .page-stamp { display: none; }
+
+  :root, [data-theme="dark"] {
+    --bg: #fff;
+    --page-bg: #fff;
+    --surface: #fff;
+    --surface-2: #f4f3f0;
+    --surface-3: #eae9e5;
+    --text: #1a1914;
+    --text-muted: #5a5750;
+    --text-faint: #9a978f;
+    --gold: #b07a00;
+    --gold-mid: #c98a2a;
+    --gold-bg: rgba(176,122,0,0.07);
+    --teal: #01696f;
+    --teal-bg: rgba(1,105,111,0.07);
+    --success: #3a6e1a;
+    --success-bg: rgba(58,110,26,0.07);
+    --error: #b52c38;
+    --error-bg: rgba(181,44,56,0.07);
+    --warning: #8a5a00;
+    --warning-bg: rgba(138,90,0,0.07);
+    --border: rgba(26,25,20,0.10);
+    --border-strong: rgba(26,25,20,0.15);
+    --shadow-page: none;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════ */
+@media (max-width: 860px) {
+  :root { --page-pad: 28px; --page-pad-v: 32px; }
+  .memo-h1 { font-size: 1.3125rem; }
+  .kpi-v { font-size: 1.125rem; }
+}
+@media (max-width: 600px) {
+  :root { --page-pad: 18px; --page-pad-v: 24px; }
+  .kpi-strip { grid-template-columns: 1fr; }
+  .kpi-sep { display: none; }
+  .cards-grid { grid-template-columns: 1fr 1fr; }
+  .risk-row { grid-template-columns: 1fr; gap: 4px; }
+  .memo-header { flex-direction: column; gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ TOOLBAR ═══════════════════════ -->
+<nav class="toolbar" aria-label="Document controls">
+  <div class="toolbar-left">
+    <span class="toolbar-logo">BLK</span>
+    <span class="toolbar-meta">
+      <strong>Executive Brief</strong> &nbsp;·&nbsp; Institutional Investment Memorandum &nbsp;·&nbsp; April 8, 2026
+    </span>
+  </div>
+  <div class="toolbar-actions">
+    <button class="btn-tb" id="theme-btn" aria-label="Toggle color theme">Dark Mode</button>
+    <button class="btn-tb btn-print" onclick="window.print()">Print / PDF ↗</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ DOCUMENT ═══════════════════════ -->
+<div class="doc-wrap">
+
+  <!-- ═══ PAGE 1 — THESIS COVER ═══ -->
+  <article class="page" id="p1" aria-label="Section 1: Thesis Cover">
+    <div class="page-inner">
+
+      <!-- Memo Header -->
+      <header class="memo-header">
+        <div class="memo-logo-wrap">
+          <span class="memo-logo" aria-label="BlackRock ticker symbol">BLK</span>
+        </div>
+        <div class="memo-title-block">
+          <p class="memo-doc-type">Equity Research &nbsp;·&nbsp; Long Position &nbsp;·&nbsp; Perplexity Stock Pitch Competition 2026</p>
+          <h1 class="memo-h1">BlackRock, Inc. (BLK) &mdash; <em>Long</em> Equity Thesis</h1>
+          <p class="memo-subtitle">Institutional Investment Memorandum &nbsp;&middot;&nbsp; April 8, 2026</p>
+          <p class="memo-prepared">
+            Prepared by <strong>Nicholas Hawkins &nbsp;&middot;&nbsp; Hawkins Holdings</strong>
+            &nbsp;&middot;&nbsp; Texas Southern University
+          </p>
+        </div>
+      </header>
+
+      <!-- KPI Strip -->
+      <div class="kpi-strip" role="region" aria-label="Market data summary">
+        <div class="kpi-cell">
+          <span class="kpi-v" aria-label="Closing price $1,001.54">$1,001.54</span>
+          <span class="kpi-lbl">Close &nbsp;&middot;&nbsp; NYSE &nbsp;&middot;&nbsp; Apr 8, 2026</span>
+        </div>
+        <div class="kpi-sep" aria-hidden="true"></div>
+        <div class="kpi-cell">
+          <span class="kpi-v" aria-label="Consensus target $1,239.26">$1,239.26</span>
+          <span class="kpi-lbl">Consensus Target &nbsp;&middot;&nbsp; 19 Analysts</span>
+        </div>
+        <div class="kpi-sep" aria-hidden="true"></div>
+        <div class="kpi-cell">
+          <span class="kpi-v up" aria-label="Implied upside +23.7%">+23.7%</span>
+          <span class="kpi-lbl">Implied Upside &nbsp;&middot;&nbsp; Base Case</span>
+        </div>
+      </div>
+
+      <!-- Thesis Statements -->
+      <p class="section-eyebrow">Investment Thesis</p>
+
+      <div class="thesis-paras">
+
+        <div class="thesis-para">
+          <span class="tp-num" aria-hidden="true">01</span>
+          <div class="tp-body">
+            <span class="tp-lead">What BlackRock Is</span>
+            <p class="tp-text">
+              BlackRock is the only asset manager that is simultaneously <strong>the world's largest ETF provider</strong> &mdash; anchoring $5.5T in iShares AUM with approximately 40% of global ETF market share &mdash; <strong>a rapidly scaling private markets platform</strong> with $423.6B in alternatives AUM, and <strong>the operator of Aladdin</strong>, the dominant institutional risk management and portfolio operating system overseeing $21.6T across more than 200 client institutions globally. No single competitor has assembled all three capabilities at this scale.
+            </p>
+          </div>
+        </div>
+
+        <div class="thesis-para">
+          <span class="tp-num" aria-hidden="true">02</span>
+          <div class="tp-body">
+            <span class="tp-lead">Why Now</span>
+            <p class="tp-text">
+              The combination of the <strong>GIP, HPS, and Preqin acquisitions</strong> has fundamentally changed BlackRock's earnings quality mix &mdash; from AUM-sensitive base fees toward recurring technology subscriptions and higher-margin private markets revenue. Technology services grew <strong>24% year-over-year</strong> in Q4 2025; alternatives fees grew <strong>136%</strong> through the first three quarters of 2025. This revenue mix transformation, now approaching 20% of total, is <strong>not yet reflected</strong> in a stock trading at approximately 22x forward earnings.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <span class="page-stamp" aria-hidden="true">BLK &nbsp;·&nbsp; Long Equity Thesis &nbsp;·&nbsp; 1 of 2</span>
+  </article>
+
+  <!-- ═══ PAGE 2 — SUPPORTING EVIDENCE ═══ -->
+  <article class="page" id="p2" aria-label="Section 2: Supporting Evidence">
+    <div class="page-inner">
+
+      <!-- Page 2 Header -->
+      <div class="p2-header">
+        <span class="p2-logo" aria-label="BlackRock ticker symbol">BLK</span>
+        <span class="p2-title">Supporting Evidence</span>
+      </div>
+
+      <!-- Data Cards -->
+      <p class="section-eyebrow">Key Data Points</p>
+
+      <div class="cards-grid" role="list" aria-label="Supporting data">
+
+        <!-- Column 1 — Scale & Coverage -->
+        <div class="d-card" role="listitem">
+          <span class="d-card-v">$11.6T</span>
+          <span class="d-card-lbl">AUM Global</span>
+          <span class="d-card-sub">Long-term assets under management</span>
+        </div>
+        <div class="d-card" role="listitem">
+          <span class="d-card-v tl">$21.6T</span>
+          <span class="d-card-lbl">Aladdin Platform</span>
+          <span class="d-card-sub">Assets managed across 200+ client institutions</span>
+        </div>
+        <div class="d-card" role="listitem">
+          <span class="d-card-v gr">$400B+</span>
+          <span class="d-card-lbl">Private Markets Target</span>
+          <span class="d-card-sub">Management fundraising goal by 2030</span>
+        </div>
+
+        <!-- Column 2 — Market Position & Deals -->
+        <div class="d-card" role="listitem">
+          <span class="d-card-v">~40%</span>
+          <span class="d-card-lbl">Global ETF Share</span>
+          <span class="d-card-sub">iShares &nbsp;&middot;&nbsp; $527B record net flows in 2025</span>
+        </div>
+        <div class="d-card" role="listitem">
+          <span class="d-card-v tl">$3.2B</span>
+          <span class="d-card-lbl">Preqin Acquisition</span>
+          <span class="d-card-sub">Private markets data moat &nbsp;&middot;&nbsp; Closed 2025</span>
+        </div>
+        <div class="d-card" role="listitem">
+          <span class="d-card-v">$3B</span>
+          <span class="d-card-lbl">GIP Deal (Cash)</span>
+          <span class="d-card-sub">Infrastructure platform &nbsp;&middot;&nbsp; Oct 2024</span>
+        </div>
+
+        <!-- Column 3 — Analyst Consensus & Valuation -->
+        <div class="d-card" role="listitem">
+          <span class="d-card-v tl">19</span>
+          <span class="d-card-lbl">Analysts Covering BLK</span>
+          <span class="d-card-sub">Strong Buy consensus &nbsp;&middot;&nbsp; 0 Sell ratings</span>
+        </div>
+        <div class="d-card" role="listitem">
+          <span class="d-card-v">$1,290</span>
+          <span class="d-card-lbl">Barclays Price Target</span>
+          <span class="d-card-sub">Overweight &nbsp;&middot;&nbsp; April 8, 2026</span>
+        </div>
+        <div class="d-card" role="listitem">
+          <span class="d-card-v gr">~$1,180</span>
+          <span class="d-card-lbl">Base Case DCF</span>
+          <span class="d-card-sub">+17.8% upside &nbsp;&middot;&nbsp; Internal estimate</span>
+        </div>
+
+      </div>
+
+      <!-- Risk Summary -->
+      <div class="risk-block" role="region" aria-label="Risk summary">
+        <p class="risk-hd">Risk Summary</p>
+        <div class="risk-rows">
+          <div class="risk-row">
+            <span class="rk-name">Fee Compression</span>
+            <span class="rk-mit">Mitigant: private market mix shift and Aladdin SaaS subscription revenue structurally offset passive fee erosion.</span>
+            <span class="rk-tag rk-medium">Medium</span>
+          </div>
+          <div class="risk-row">
+            <span class="rk-name">M&amp;A Integration</span>
+            <span class="rk-mit">Mitigant: 20-year acquisition track record; HPS synergy data confirmed positive; Preqin integration ahead of schedule.</span>
+            <span class="rk-tag rk-high">High</span>
+          </div>
+          <div class="risk-row">
+            <span class="rk-name">Valuation Premium</span>
+            <span class="rk-mit">Mitigant: Aladdin re-rating toward SaaS multiples; ~22x P/E sits between 9.7x AM floor and 29&ndash;39x alternatives ceiling.</span>
+            <span class="rk-tag rk-low">Low</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Document Footer -->
+      <footer class="doc-footer">
+        <p class="footer-txt">
+          This document was produced using <span class="brand">Perplexity AI</span>'s research, Premium Data, and Computer capabilities. All market-linked figures are as of April 8, 2026. Q1 2026 earnings are pending. Internal analysis only &mdash; not a solicitation. &nbsp;
+          Sources: <a href="https://www.benzinga.com/quote/BLK/analyst-ratings" target="_blank" rel="noopener">Benzinga Analyst Ratings</a> &nbsp;&middot;&nbsp;
+          <a href="https://www.alpha-sense.com/earnings/blk/" target="_blank" rel="noopener">AlphaSense Q4&nbsp;2025</a> &nbsp;&middot;&nbsp;
+          <a href="https://fortune.com/2026/01/30/blackrock-executive-compensation-private-markets/" target="_blank" rel="noopener">Fortune Jan. 2026</a> &nbsp;&middot;&nbsp;
+          <a href="https://www.businessinsider.com/blackrock-private-markets-revenue-outpaces-etfs-fixed-income-2025-10" target="_blank" rel="noopener">Business Insider Oct. 2025</a> &nbsp;&middot;&nbsp;
+          <a href="https://github.com/ndhthecatalyst/Perplexity-Pitch-Contest-Blackrock-Long-Position" target="_blank" rel="noopener">GitHub Repository</a>
+        </p>
+      </footer>
+
+    </div>
+    <span class="page-stamp" aria-hidden="true">BLK &nbsp;·&nbsp; Long Equity Thesis &nbsp;·&nbsp; 2 of 2</span>
+  </article>
+
+</div><!-- end doc-wrap -->
+
+<script>
+(function () {
+  var btn = document.getElementById('theme-btn');
+  var html = document.documentElement;
+  var current = 'light';
+  html.setAttribute('data-theme', 'light');
+
+  btn.addEventListener('click', function () {
+    current = current === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', current);
+    btn.textContent = current === 'dark' ? 'Light Mode' : 'Dark Mode';
+    btn.setAttribute('aria-label', 'Switch to ' + (current === 'dark' ? 'light' : 'dark') + ' mode');
+  });
+})();
+</script>
+
+</body>
+</html>
