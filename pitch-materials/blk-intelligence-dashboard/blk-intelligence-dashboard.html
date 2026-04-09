@@ -1564,21 +1564,28 @@ function closeAcqModal() {
   document.body.style.overflow = '';
 }
 
-document.getElementById('acqModalClose').addEventListener('click', closeAcqModal);
-document.getElementById('acqModal').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeAcqModal();
-});
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAcqModal(); });
-
-// Wire acq nodes
-document.querySelectorAll('.acq-node[data-acq]').forEach(node => {
-  node.addEventListener('click', () => openAcqModal(node.dataset.acq));
-  node.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openAcqModal(node.dataset.acq); });
-});
+// Modal + acq-node wiring moved into bootDashboard (runs after load, DOM ready)
 
 function bootDashboard() {
   initForTab('overview');
   runCountUp();
+
+  // Wire modal close — must run post-load since modal HTML lives after the <script> tag
+  var modalOverlay = document.getElementById('acqModal');
+  var modalClose   = document.getElementById('acqModalClose');
+  if (modalClose)   modalClose.addEventListener('click', closeAcqModal);
+  if (modalOverlay) modalOverlay.addEventListener('click', function(e) {
+    if (e.target === e.currentTarget) closeAcqModal();
+  });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeAcqModal(); });
+
+  // Wire acq nodes — same reason, attach after DOM is fully painted
+  document.querySelectorAll('.acq-node[data-acq]').forEach(function(node) {
+    node.addEventListener('click', function() { openAcqModal(node.dataset.acq); });
+    node.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') openAcqModal(node.dataset.acq);
+    });
+  });
 }
 
 if (document.readyState === 'complete') {
