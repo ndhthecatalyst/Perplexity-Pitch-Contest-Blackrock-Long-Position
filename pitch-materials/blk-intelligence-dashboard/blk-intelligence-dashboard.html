@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLK Intelligence Dashboard | BlackRock Long Position · April 8, 2026</title>
+<meta name="description" content="BlackRock (NYSE: BLK) institutional investment intelligence dashboard — Perplexity Pitch Contest 2026 | Nicholas Hawkins / Hawkins Holdings">
+
+<!-- Preconnect -->
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- Satoshi (Fontshare) -->
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<!-- Instrument Serif + JetBrains Mono (Google Fonts) -->
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+/* ══════════════════════════════════════════════════════════
+   1. DESIGN TOKENS
+══════════════════════════════════════════════════════════ */
+:root {
+  /* Surfaces */
+  --bg:              #0f0e0c;
+  --surface:         #161513;
+  --surface-2:       #1d1c19;
+  --surface-off:     #232118;
+  /* Text */
+  --text:            #e8e5df;
+  --text-muted:      #8a877e;
+  --text-faint:      #524f48;
+  /* Accent */
+  --gold:            #d19900;
+  --gold-hover:      #b07a00;
+  --teal:            #4f98a3;
+  --success:         #6daa45;
+  --warning:         #c98a2a;
+  --error:           #dd6974;
+  /* Border */
+  --border:          rgba(232,229,223,0.10);
+  /* Typography */
+  --display:        'Instrument Serif', Georgia, serif;
+  --body:           'Satoshi', system-ui, sans-serif;
+  --mono:           'JetBrains Mono', 'Fira Code', monospace;
+  /* Spacing */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px;
+  --s5:20px; --s6:24px; --s8:32px; --s10:40px;
+  /* Easing */
+  --ease-out:   cubic-bezier(0.16,1,0.3,1);
+  --ease-in:    cubic-bezier(0.4,0,1,1);
+  --ease-inout: cubic-bezier(0.4,0,0.2,1);
+  --t:          180ms cubic-bezier(0.16,1,0.3,1);
+  --nav-h:      56px;
+}
+[data-theme="light"] {
+  --bg:          #f4f2ee;
+  --surface:     #f9f8f5;
+  --surface-2:   #eeecea;
+  --surface-off: #e5e3df;
+  --text:        #1a1914;
+  --text-muted:  #5a5750;
+  --text-faint:  #9a978f;
+  --gold:        #b07a00;
+  --gold-hover:  #8f6000;
+  --border:      rgba(26,25,20,0.12);
+}
+
+/* ══════════════════════════════════════════════════════════
+   2. RESET & BASE
+══════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{
+  font-family:var(--body);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.5;
+  min-height:100vh;
+  transition:background .3s var(--ease-inout),color .3s var(--ease-inout);
+}
+/* Tabular numbers everywhere they matter */
+.mono,.price,.kpi-v,.cd-num,.data-val{
+  font-family:var(--mono);
+  font-variant-numeric:tabular-nums lining-nums;
+}
+
+/* ══════════════════════════════════════════════════════════
+   3. NAV
+══════════════════════════════════════════════════════════ */
+.nav{
+  position:sticky;top:0;z-index:100;
+  height:var(--nav-h);
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 var(--s6);gap:var(--s5);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  transition:background .3s var(--ease-inout),border-color .3s var(--ease-inout);
+}
+.nav-logo{
+  flex-shrink:0;display:flex;align-items:center;gap:var(--s2);
+  text-decoration:none;color:var(--text);
+}
+.nav-wordmark{
+  font-family:var(--display);
+  font-size:1.05rem;
+  color:var(--gold);
+  letter-spacing:-.01em;
+}
+.nav-tabs{
+  display:flex;align-items:center;gap:2px;flex:1;
+  justify-content:center;overflow-x:auto;scrollbar-width:none;
+}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{
+  display:flex;align-items:center;
+  padding:6px var(--s3);
+  font-size:.8125rem;font-weight:500;
+  color:var(--text-muted);
+  text-decoration:none;border-radius:6px;
+  white-space:nowrap;cursor:pointer;
+  border:none;background:none;
+  transition:color var(--t),background var(--t);
+  font-family:var(--body);
+}
+.nav-tab:hover{color:var(--text);background:var(--surface-2)}
+.nav-tab.active{color:var(--gold);background:rgba(209,153,0,.10)}
+.nav-right{flex-shrink:0;display:flex;align-items:center;gap:var(--s3)}
+.nav-date{
+  font-size:.6875rem;color:var(--text-faint);
+  font-family:var(--mono);
+  background:var(--surface-2);border:1px solid var(--border);
+  padding:3px var(--s2);border-radius:4px;white-space:nowrap;
+}
+.theme-btn{
+  width:32px;height:32px;border-radius:6px;
+  border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text-muted);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:color var(--t),background var(--t);
+}
+.theme-btn:hover{color:var(--text)}
+
+/* ══════════════════════════════════════════════════════════
+   4. TAB PANELS
+══════════════════════════════════════════════════════════ */
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:tab-in 300ms var(--ease-out) both}
+@keyframes tab-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.panel{max-width:1400px;margin:0 auto;padding:var(--s8) var(--s6)}
+.date-stamp{
+  font-size:.6875rem;color:var(--text-faint);
+  font-family:var(--mono);margin-bottom:var(--s6);
+  display:flex;align-items:center;gap:var(--s2);
+}
+.date-stamp::before{
+  content:'';display:inline-block;
+  width:6px;height:6px;border-radius:50%;background:var(--success);
+}
+
+/* ══════════════════════════════════════════════════════════
+   5. TYPOGRAPHY HELPERS
+══════════════════════════════════════════════════════════ */
+.section-label{
+  font-size:.6875rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--text-muted);margin-bottom:var(--s4);
+}
+.section-head{
+  display:flex;align-items:baseline;gap:var(--s4);
+  margin-bottom:var(--s5);flex-wrap:wrap;
+}
+.section-head h2{
+  font-family:var(--display);font-size:1.25rem;
+  font-weight:400;color:var(--text);
+}
+.section-head p{font-size:.8125rem;color:var(--text-muted)}
+
+/* ══════════════════════════════════════════════════════════
+   6. CARDS
+══════════════════════════════════════════════════════════ */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:var(--s6);
+  transition:background .3s var(--ease-inout),border-color .3s var(--ease-inout);
+}
+.card-2{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:var(--s6)}
+
+/* ══════════════════════════════════════════════════════════
+   7. BADGES & PILLS
+══════════════════════════════════════════════════════════ */
+.badge{
+  display:inline-flex;align-items:center;
+  font-size:.6875rem;font-weight:600;
+  padding:3px 7px;border-radius:4px;
+  letter-spacing:.03em;white-space:nowrap;
+}
+.b-gold   {background:rgba(209,153,0,.18);color:var(--gold)}
+.b-teal   {background:rgba(79,152,163,.18);color:var(--teal)}
+.b-ok     {background:rgba(109,170,69,.18);color:var(--success)}
+.b-warn   {background:rgba(201,138,42,.18);color:var(--warning)}
+.b-err    {background:rgba(221,105,116,.18);color:var(--error)}
+.b-muted  {background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border)}
+.pill{display:inline-flex;align-items:center;gap:3px;font-size:.6875rem;font-weight:600;padding:4px 10px;border-radius:999px}
+.p-ok  {background:rgba(109,170,69,.14);color:var(--success)}
+.p-muted{background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border)}
+
+/* ══════════════════════════════════════════════════════════
+   8. MODULE A — HERO STRIP  (animated border)
+══════════════════════════════════════════════════════════ */
+@property --pulse-op {
+  syntax:'<number>';initial-value:0.12;inherits:false;
+}
+.hero{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:var(--s8);
+  margin-bottom:var(--s6);position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,var(--gold) 28%,var(--teal) 65%,transparent 100%);
+  opacity:var(--pulse-op);
+  animation:hero-pulse 4s ease-in-out infinite;
+}
+@keyframes hero-pulse{
+  0%,100%{--pulse-op:0.10}
+  50%    {--pulse-op:0.88}
+}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:var(--s8);align-items:center}
+.hero-ticker{font-size:.6875rem;color:var(--text-muted);letter-spacing:.12em;text-transform:uppercase;font-family:var(--mono);margin-bottom:var(--s2)}
+.hero-company{font-family:var(--display);font-size:1.25rem;color:var(--text);margin-bottom:var(--s3)}
+.hero-price{
+  font-family:var(--mono);font-size:2.1rem;font-weight:500;
+  color:var(--gold);font-variant-numeric:tabular-nums lining-nums;
+  line-height:1;margin-bottom:var(--s2);
+}
+.hero-range{font-size:.8125rem;color:var(--text-muted);font-family:var(--mono);font-variant-numeric:tabular-nums lining-nums}
+.hero-meta{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s4);align-items:center}
+.hero-stats{display:flex;flex-direction:column;align-items:flex-end;gap:var(--s3);min-width:160px}
+.h-stat-label{font-size:.6875rem;color:var(--text-faint);margin-bottom:2px}
+.h-stat-val{font-size:.9375rem;font-weight:600;color:var(--text);font-family:var(--mono);font-variant-numeric:tabular-nums lining-nums}
+
+/* ══════════════════════════════════════════════════════════
+   9. MODULE B — THESIS BENTO
+══════════════════════════════════════════════════════════ */
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s6);margin-bottom:var(--s6)}
+.t-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:var(--s6);
+  display:flex;flex-direction:column;gap:var(--s4);
+  transition:background .3s var(--ease-inout);
+}
+.t-title{font-family:var(--display);font-size:1.0625rem;color:var(--text);line-height:1.3}
+.t-body{font-size:.8125rem;color:var(--text-muted);line-height:1.65;flex:1}
+.data-badge{
+  display:inline-flex;align-items:center;
+  font-family:var(--mono);font-size:.8125rem;font-weight:500;
+  color:var(--gold);
+  background:rgba(209,153,0,.10);border:1px solid rgba(209,153,0,.20);
+  padding:var(--s2) var(--s3);border-radius:6px;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+.chart-sm{height:72px;position:relative}
+.chart-donut{height:148px;position:relative}
+
+/* Acquisition timeline */
+.acq-tl{display:flex;position:relative;gap:0}
+.acq-tl::before{
+  content:'';position:absolute;top:10px;left:10px;right:10px;height:1px;
+  background:linear-gradient(90deg,var(--gold),var(--teal),var(--success));
+  z-index:0;
+}
+.acq-node{flex:1;display:flex;flex-direction:column;align-items:center;gap:var(--s1);position:relative;z-index:1}
+.acq-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--surface);flex-shrink:0}
+.acq-dot.g{background:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.acq-dot.t{background:var(--teal);box-shadow:0 0 0 2px var(--teal)}
+.acq-dot.s{background:var(--success);box-shadow:0 0 0 2px var(--success)}
+.acq-label{font-size:.6875rem;font-weight:700;color:var(--text);text-align:center}
+.acq-date{font-size:10px;color:var(--text-muted);font-family:var(--mono);text-align:center}
+.acq-detail{font-size:9.5px;color:var(--text-faint);text-align:center;line-height:1.4}
+
+/* ══════════════════════════════════════════════════════════
+   10. MODULE D — ANALYST PANEL
+══════════════════════════════════════════════════════════ */
+.analyst-grid{display:grid;grid-template-columns:2fr 1fr;gap:var(--s6);margin-bottom:var(--s6)}
+.chart-dot{height:120px;position:relative}
+.dot-legend{display:flex;gap:16px;margin-top:8px;flex-wrap:wrap}
+.dot-legend span{font-size:10px;color:var(--text-faint);display:flex;align-items:center;gap:5px}
+.action-list{display:flex;flex-direction:column;gap:var(--s2)}
+.action-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:var(--s2) var(--s3);border-radius:8px;
+  background:var(--surface-2);gap:var(--s2);
+}
+.action-firm{font-size:.8125rem;font-weight:600;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.action-target{font-family:var(--mono);font-size:.8125rem;font-variant-numeric:tabular-nums lining-nums;color:var(--text);flex-shrink:0}
+.action-date{font-size:10px;color:var(--text-faint);font-family:var(--mono);white-space:nowrap;flex-shrink:0}
+.consensus-bar{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.consensus-val{font-family:var(--mono);font-size:.9375rem;font-weight:500;color:var(--teal);font-variant-numeric:tabular-nums lining-nums}
+
+/* ══════════════════════════════════════════════════════════
+   11. MODULE E — COUNTDOWN
+══════════════════════════════════════════════════════════ */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);margin-bottom:var(--s6)}
+.cd-display{display:flex;gap:var(--s4);align-items:center;justify-content:center;margin:var(--s5) 0}
+.cd-unit{display:flex;flex-direction:column;align-items:center;gap:4px}
+.cd-num{font-family:var(--mono);font-size:2rem;font-weight:500;color:var(--gold);line-height:1;font-variant-numeric:tabular-nums lining-nums}
+.cd-label{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--text-faint)}
+.cd-sep{font-family:var(--mono);font-size:1.6rem;color:var(--text-faint);margin-bottom:14px}
+.watch-list{list-style:none;display:flex;flex-direction:column;gap:var(--s2)}
+.watch-list li{
+  font-size:.8125rem;color:var(--text-muted);
+  padding-left:var(--s4);position:relative;line-height:1.55;
+}
+.watch-list li::before{
+  content:'';position:absolute;left:0;top:7px;
+  width:5px;height:5px;border-radius:50%;background:var(--gold);
+}
+
+/* ══════════════════════════════════════════════════════════
+   12. MODULE C — VALUATION
+══════════════════════════════════════════════════════════ */
+.scenario-grid{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:var(--s4);margin-bottom:var(--s6)}
+.s-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:var(--s6);
+  display:flex;flex-direction:column;gap:var(--s3);
+  transition:background .3s var(--ease-inout);
+}
+.s-card.base{background:var(--surface-2);border-color:rgba(209,153,0,.22)}
+.s-price{font-family:var(--display);font-size:1.6rem;color:var(--text)}
+.s-upside{font-family:var(--mono);font-size:.8125rem;font-variant-numeric:tabular-nums lining-nums}
+.s-up{color:var(--success)}.s-dn{color:var(--error)}
+.s-assume{font-size:.75rem;color:var(--text-muted);line-height:1.55;flex:1}
+.s-foot{font-size:10px;color:var(--text-faint);font-style:italic;margin-bottom:var(--s6)}
+.chart-bridge{height:190px;position:relative;margin-bottom:var(--s6)}
+
+/* Comp Table */
+.tbl-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+table.ctbl{width:100%;border-collapse:collapse;font-size:.8125rem}
+.ctbl thead th{
+  position:sticky;top:0;z-index:1;
+  background:var(--surface-2);
+  color:var(--text-muted);font-size:.6875rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.06em;
+  padding:var(--s3) var(--s4);text-align:left;
+  cursor:pointer;white-space:nowrap;user-select:none;
+  transition:color var(--t);
+}
+.ctbl thead th:hover{color:var(--text)}
+.ctbl thead th.sorted{color:var(--gold)}
+.ctbl tbody tr{border-top:1px solid var(--border);cursor:pointer;transition:background var(--t)}
+.ctbl tbody tr:hover{background:var(--surface-2)}
+.ctbl tbody tr.blk{background:rgba(209,153,0,.05)}
+.ctbl tbody tr.blk:hover{background:rgba(209,153,0,.10)}
+.ctbl td{padding:var(--s3) var(--s4);color:var(--text);font-variant-numeric:tabular-nums lining-nums;vertical-align:top}
+.ctbl td.mut{color:var(--text-muted)}
+.ctbl td.mn{font-family:var(--mono);font-size:.75rem}
+.ctbl .co{font-weight:600}
+.ctbl .tk{font-family:var(--mono);font-size:.75rem;color:var(--text-muted)}
+.c-drawer{display:none}
+.c-drawer.open{display:table-row}
+.c-drawer td{background:var(--surface-off);padding:var(--s3) var(--s5) var(--s4);font-size:.75rem;color:var(--text-muted);line-height:1.65;border-top:none}
+
+/* ══════════════════════════════════════════════════════════
+   13. COMPETITIVE TAB
+══════════════════════════════════════════════════════════ */
+.moat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s4);margin-bottom:var(--s6)}
+.moat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:var(--s6);display:flex;flex-direction:column;gap:var(--s3)}
+.moat-num{font-size:.6875rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono)}
+.moat-title{font-family:var(--display);font-size:1.0625rem;color:var(--text)}
+.moat-body{font-size:.8125rem;color:var(--text-muted);line-height:1.65;flex:1}
+.rerate-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:var(--s6);margin-bottom:var(--s6)}
+.rerate-scale{display:flex;align-items:flex-start;gap:0;margin-top:var(--s6);position:relative;justify-content:space-between}
+.rerate-scale::before{
+  content:'';position:absolute;top:18px;left:10%;right:10%;height:2px;
+  background:linear-gradient(90deg,var(--error),var(--gold),var(--teal),var(--success));z-index:0;
+}
+.rerate-node{display:flex;flex-direction:column;align-items:center;gap:var(--s2);flex:1;position:relative;z-index:1}
+.rerate-dot{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:.6875rem;font-weight:700;
+  border:2px solid var(--surface);
+}
+.rd-floor  {background:rgba(221,105,116,.18);color:var(--error);border-color:var(--error)}
+.rd-current{background:rgba(209,153,0,.18);color:var(--gold);border-color:var(--gold)}
+.rd-mid    {background:rgba(79,152,163,.18);color:var(--teal);border-color:var(--teal)}
+.rd-ceil   {background:rgba(109,170,69,.18);color:var(--success);border-color:var(--success)}
+.rerate-label{font-size:.6875rem;font-weight:600;color:var(--text);text-align:center}
+.rerate-sub{font-size:9.5px;color:var(--text-faint);text-align:center;line-height:1.4}
+
+/* ══════════════════════════════════════════════════════════
+   14. MODULE F — RISK ACCORDION
+══════════════════════════════════════════════════════════ */
+.accordion{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.acc-item{border-bottom:1px solid var(--border);background:var(--surface);transition:background .2s}
+.acc-item:last-child{border-bottom:none}
+.acc-item.open{background:var(--surface-2)}
+.acc-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;padding:var(--s4) var(--s6);
+  background:none;border:none;cursor:pointer;
+  color:var(--text);text-align:left;gap:var(--s4);
+  transition:background var(--t);font-family:var(--body);
+}
+.acc-trigger:hover{background:var(--surface-2)}
+.acc-tl{display:flex;align-items:center;gap:var(--s3);flex:1}
+.risk-num{font-family:var(--mono);font-size:.6875rem;color:var(--text-faint);min-width:22px}
+.risk-title{font-size:.8125rem;font-weight:500;color:var(--text)}
+.acc-arrow{flex-shrink:0;width:16px;height:16px;color:var(--text-muted);transition:transform 280ms var(--ease-out)}
+.acc-item.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height 280ms var(--ease-inout)}
+.acc-item.open .acc-body{max-height:220px}
+.acc-content{
+  padding:0 var(--s6) var(--s4) calc(var(--s6) + 22px + var(--s3));
+  font-size:.8125rem;color:var(--text-muted);line-height:1.65;
+}
+.mitigant{
+  margin-top:var(--s2);font-size:.75rem;color:var(--success);
+  display:flex;align-items:flex-start;gap:var(--s2);
+}
+.mitigant::before{content:'↑';font-weight:700;flex-shrink:0}
+
+/* ══════════════════════════════════════════════════════════
+   15. MODULE G — PROCESS TIMELINE
+══════════════════════════════════════════════════════════ */
+.proc-tl{display:flex;flex-direction:column;gap:0;margin-bottom:var(--s8);position:relative}
+.proc-tl::before{
+  content:'';position:absolute;left:20px;top:20px;bottom:20px;
+  width:2px;background:linear-gradient(180deg,var(--gold),var(--teal));
+}
+.proc-stage{display:grid;grid-template-columns:40px 1fr;gap:var(--s4);padding:var(--s4) 0;position:relative}
+.stage-icon{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--surface-2);border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;position:relative;z-index:1;color:var(--gold);
+}
+.stage-content{padding:var(--s2) 0}
+.stage-head{
+  font-size:.9375rem;font-weight:600;color:var(--text);
+  margin-bottom:var(--s2);display:flex;align-items:center;gap:var(--s3);flex-wrap:wrap;
+}
+.stage-badge{
+  font-size:.6875rem;font-weight:600;padding:2px 7px;border-radius:4px;
+  background:rgba(209,153,0,.12);color:var(--gold);
+  border:1px solid rgba(209,153,0,.22);white-space:nowrap;
+}
+.stage-badge.yah{
+  background:rgba(79,152,163,.14);color:var(--teal);
+  border-color:rgba(79,152,163,.25);
+  animation:yah-pulse 2s ease-in-out infinite;
+}
+@keyframes yah-pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.stage-desc{font-size:.8125rem;color:var(--text-muted);line-height:1.65}
+.plx-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4)}
+.plx-tile{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:10px;padding:var(--s4);
+  font-size:.8125rem;color:var(--text-muted);line-height:1.55;
+}
+.plx-tile strong{
+  display:block;font-size:.9375rem;color:var(--text);
+  font-family:var(--mono);font-variant-numeric:tabular-nums lining-nums;
+  margin-bottom:var(--s2);
+}
+.proc-meta{
+  display:flex;flex-wrap:wrap;gap:var(--s6);
+  margin-top:var(--s6);
+}
+.proc-meta-item{}
+.proc-meta-label{font-size:.6875rem;color:var(--text-faint);margin-bottom:3px}
+.proc-meta-val{font-family:var(--mono);font-size:.8125rem;color:var(--text)}
+
+/* ══════════════════════════════════════════════════════════
+   16. RESPONSIVE
+══════════════════════════════════════════════════════════ */
+@media(max-width:900px){
+  .bento,.moat-grid,.cat-grid,.scenario-grid,.plx-tiles{grid-template-columns:1fr}
+  .analyst-grid{grid-template-columns:1fr}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-stats{align-items:flex-start;margin-top:var(--s4)}
+  .rerate-scale{flex-wrap:wrap;gap:var(--s4)}
+  .rerate-scale::before{display:none}
+  .panel{padding:var(--s5) var(--s4)}
+}
+@media(max-width:600px){
+  .hero-price{font-size:1.6rem}
+  .nav-date{display:none}
+  .nav-wordmark{display:none}
+  .nav{padding:0 var(--s4)}
+}
+
+/* ══════════════════════════════════════════════════════════
+   17. UTILITIES
+══════════════════════════════════════════════════════════ */
+.divider{border:none;border-top:1px solid var(--border);margin:var(--s6) 0}
+.mt4{margin-top:var(--s4)}.mt6{margin-top:var(--s6)}.mb6{margin-bottom:var(--s6)}
+.txt-faint{color:var(--text-faint)}.txt-muted{color:var(--text-muted)}
+.txt-xs{font-size:.6875rem}.txt-sm{font-size:.8125rem}
+.italic{font-style:italic}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     NAV BAR
+══════════════════════════════════════════════════════════ -->
+<nav class="nav" role="navigation" aria-label="Dashboard navigation">
+  <a href="#" class="nav-logo" aria-label="BLK Intelligence Dashboard home">
+    <!-- Geometric BLK lettermark SVG -->
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+      <rect width="28" height="28" rx="6" fill="rgba(209,153,0,0.14)"/>
+      <path d="M7 7h3.4c2.1 0 3.7 1.4 3.7 3.5 0 1.1-.46 2-1.16 2.46 1.08.44 1.86 1.6 1.86 2.84 0 2.3-1.7 3.5-4.1 3.5H7V7zm3.2 5.1c.9 0 1.5-.53 1.5-1.5s-.6-1.42-1.5-1.42H9.2v2.92h1zm.36 5.3c.98 0 1.6-.62 1.6-1.6s-.62-1.6-1.6-1.6H9.2v3.2h1.36zM16.5 7h2.3v14h-2.3V7z" fill="#d19900"/>
+    </svg>
+    <span class="nav-wordmark">BLK</span>
+  </a>
+
+  <div class="nav-tabs" role="tablist" aria-label="Dashboard sections">
+    <button class="nav-tab active" role="tab" data-tab="overview"    aria-selected="true">Overview</button>
+    <button class="nav-tab"        role="tab" data-tab="valuation"   aria-selected="false">Valuation</button>
+    <button class="nav-tab"        role="tab" data-tab="competitive" aria-selected="false">Competitive</button>
+    <button class="nav-tab"        role="tab" data-tab="risk"        aria-selected="false">Risk</button>
+    <button class="nav-tab"        role="tab" data-tab="process"     aria-selected="false">Process</button>
+  </div>
+
+  <div class="nav-right">
+    <span class="nav-date">As of Apr 8, 2026</span>
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle light/dark mode" title="Toggle theme">
+      <svg id="ico-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <svg id="ico-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     TAB: OVERVIEW
+══════════════════════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-overview" role="tabpanel">
+<div class="panel">
+  <div class="date-stamp">April 8, 2026 &nbsp;·&nbsp; Pre-Q1 2026 Earnings &nbsp;·&nbsp; Long Thesis Active &nbsp;·&nbsp; 19 Analysts</div>
+
+  <!-- MODULE A — HERO -->
+  <div class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-ticker">BLK &nbsp;·&nbsp; NYSE</div>
+        <div class="hero-company">BlackRock, Inc.</div>
+        <div class="hero-price" id="heroPrice">$1,001.54</div>
+        <div class="hero-range">Day range: <span class="mono">$995.78 – $1,017.15</span></div>
+        <div class="hero-meta">
+          <span class="badge b-warn">PRE-Q1 2026 EARNINGS</span>
+          <span class="badge b-gold">PT $1,239.26</span>
+          <span class="pill p-ok">↑ +23.7% upside</span>
+          <span class="badge b-muted">Mkt Cap ~$164.9B</span>
+          <span class="badge b-muted">19 Analysts</span>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div><div class="h-stat-label">AUM (FY2025)</div><div class="h-stat-val">$14.04T</div></div>
+        <div><div class="h-stat-label">FY2025 Revenue</div><div class="h-stat-val">$24.22B</div></div>
+        <div><div class="h-stat-label">Adj. EPS (FY2025)</div><div class="h-stat-val">$48.09</div></div>
+        <div><div class="h-stat-label">Net Inflows (FY2025)</div><div class="h-stat-val">$698.3B ⟨record⟩</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE B — THESIS BENTO -->
+  <div class="section-head">
+    <h2>Investment Thesis</h2>
+    <p>Three structural arguments for the long position</p>
+  </div>
+  <div class="bento">
+    <!-- Card 1 -->
+    <div class="t-card">
+      <div class="t-title">Structural Market Dominance</div>
+      <div class="t-body">iShares anchors $5.5T in ETF AUM — 3 of every 10 ETF dollars globally flow through BlackRock infrastructure. The passive shift is structural, not cyclical. iShares delivered 12% organic asset growth and $527B in net inflows in FY2025 — a record.</div>
+      <div class="data-badge">$14.04T AUM</div>
+      <div class="chart-sm"><canvas id="chartSparkline"></canvas></div>
+      <div class="txt-xs txt-faint mono">AUM $T &nbsp;·&nbsp; 2019 – 2025</div>
+    </div>
+    <!-- Card 2 -->
+    <div class="t-card">
+      <div class="t-title">The Illiquidity Premium Capture</div>
+      <div class="t-body">GIP (~$12.5B, Oct 2024), Preqin ($3.2B, Mar 2025), and HPS ($118B private credit AUM, Jul 2025) create a private credit + infrastructure + data trifecta that no passive-only incumbent can replicate.</div>
+      <div class="data-badge">$423.6B Alternatives AUM</div>
+      <div class="acq-tl" style="margin-top:6px;">
+        <div class="acq-node">
+          <div class="acq-dot g"></div>
+          <div class="acq-label">GIP</div>
+          <div class="acq-date">Oct 2024</div>
+          <div class="acq-detail">~$12.5B<br>infra mgr</div>
+        </div>
+        <div class="acq-node">
+          <div class="acq-dot t"></div>
+          <div class="acq-label">Preqin</div>
+          <div class="acq-date">Mar 2025</div>
+          <div class="acq-detail">$3.2B<br>data layer</div>
+        </div>
+        <div class="acq-node">
+          <div class="acq-dot g"></div>
+          <div class="acq-label">HPS</div>
+          <div class="acq-date">Jul 2025</div>
+          <div class="acq-detail">$118B<br>credit</div>
+        </div>
+        <div class="acq-node">
+          <div class="acq-dot s"></div>
+          <div class="acq-label">FY2025</div>
+          <div class="acq-date">Dec 2025</div>
+          <div class="acq-detail">$423.6B<br>alts AUM</div>
+        </div>
+      </div>
+    </div>
+    <!-- Card 3 -->
+    <div class="t-card">
+      <div class="t-title">The Operating System Play</div>
+      <div class="t-body">Aladdin manages $21.6T of client assets across 200+ institutions. Preqin turns the platform into a two-sided private-markets marketplace. Tech revenue: $2.0B in FY2025, up 24%. ACV +31%. SaaS-like recurring revenue shields against fee compression.</div>
+      <div class="data-badge">$21.6T Aladdin AUM</div>
+      <div class="chart-donut"><canvas id="chartDonut"></canvas></div>
+    </div>
+  </div>
+
+  <!-- MODULE D — ANALYST INTELLIGENCE -->
+  <div class="section-head">
+    <h2>Analyst Intelligence</h2>
+    <p>Price target distribution &nbsp;·&nbsp; April 8, 2026</p>
+  </div>
+  <div class="analyst-grid card" style="padding:var(--s6);">
+    <div>
+      <div class="section-label">Target Distribution · $900 – $1,550 range</div>
+      <div class="chart-dot"><canvas id="chartDotplot"></canvas></div>
+      <div class="dot-legend">
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold)"></span> Last 30 days</span>
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--text-faint)"></span> Prior actions</span>
+        <span style="color:var(--teal)"><span style="display:inline-block;width:14px;height:1.5px;background:var(--teal);border-radius:1px;margin-bottom:1px;"></span> Consensus $1,239.26</span>
+        <span style="color:var(--gold)"><span style="display:inline-block;width:2px;height:10px;background:var(--gold);border-radius:1px;"></span> Current $1,001.54</span>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Recent Analyst Actions</div>
+      <div class="action-list">
+        <div class="action-row">
+          <span class="action-firm">Barclays</span>
+          <span class="pill p-ok" style="font-size:10px;padding:2px 8px;flex-shrink:0;">Overweight</span>
+          <span class="action-target">$1,290</span>
+          <span class="action-date">Apr 8</span>
+        </div>
+        <div class="action-row">
+          <span class="action-firm">Goldman Sachs</span>
+          <span class="pill p-ok" style="font-size:10px;padding:2px 8px;flex-shrink:0;">Buy</span>
+          <span class="action-target">$1,181</span>
+          <span class="action-date">Apr 7</span>
+        </div>
+        <div class="action-row">
+          <span class="action-firm">Morgan Stanley</span>
+          <span class="pill p-ok" style="font-size:10px;padding:2px 8px;flex-shrink:0;">Overweight</span>
+          <span class="action-target">$1,368</span>
+          <span class="action-date">Apr 1</span>
+        </div>
+        <div class="action-row">
+          <span class="action-firm">UBS</span>
+          <span class="pill p-ok" style="font-size:10px;padding:2px 8px;flex-shrink:0;">Buy</span>
+          <span class="action-target">$1,280</span>
+          <span class="action-date">Feb 23</span>
+        </div>
+        <div class="action-row">
+          <span class="action-firm">KBW</span>
+          <span class="pill p-ok" style="font-size:10px;padding:2px 8px;flex-shrink:0;">Outperform</span>
+          <span class="action-target">$1,340</span>
+          <span class="action-date">Jan 16</span>
+        </div>
+      </div>
+      <div class="consensus-bar">
+        <div class="txt-xs txt-faint" style="margin-bottom:3px;">Consensus · 19 Analysts · Apr 8, 2026</div>
+        <div class="consensus-val">$1,239.26</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE E — CATALYST COUNTDOWN -->
+  <div class="mt6">
+    <div class="section-head">
+      <h2>Catalyst Monitor</h2>
+      <p>Q1 2026 earnings watch</p>
+    </div>
+    <div class="cat-grid">
+      <div class="card">
+        <div class="section-label">Next Catalyst: Q1 2026 Earnings</div>
+        <div style="text-align:center;margin-bottom:var(--s3);">
+          <span class="badge b-warn">PRE-EARNINGS · LONG THESIS ACTIVE</span>
+        </div>
+        <div class="cd-display">
+          <div class="cd-unit"><span class="cd-num" id="cd-d">--</span><span class="cd-label">Days</span></div>
+          <span class="cd-sep">:</span>
+          <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-label">Hours</span></div>
+          <span class="cd-sep">:</span>
+          <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-label">Mins</span></div>
+          <span class="cd-sep">:</span>
+          <div class="cd-unit"><span class="cd-num" id="cd-s">--</span><span class="cd-label">Secs</span></div>
+        </div>
+        <div class="txt-xs txt-faint mono" style="text-align:center;">Est. Apr 21, 2026 · 08:00 ET</div>
+      </div>
+      <div class="card">
+        <div class="section-label">Earnings Watch List</div>
+        <ul class="watch-list">
+          <li>AUM net flows: above/below $50B quarterly threshold</li>
+          <li>Aladdin ACV run-rate and client additions — target 16%+ organic</li>
+          <li>GIP/HPS/Preqin integration: synergy timeline, cost disclosure</li>
+          <li>Fee rate trajectory: basis-point compression vs. mix shift to higher-fee private</li>
+          <li>2026 margin guidance: sustain 44–45%+ adj. operating margin</li>
+          <li>Regulatory commentary: EU, U.S. oversight, FSOC engagement</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /tab-overview -->
+
+<!-- ══════════════════════════════════════════════════════════
+     TAB: VALUATION
+══════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-valuation" role="tabpanel">
+<div class="panel">
+  <div class="date-stamp">April 8, 2026 &nbsp;·&nbsp; 5-Year DCF + Comp Analysis &nbsp;·&nbsp; Not a Solicitation</div>
+
+  <div class="section-head"><h2>Scenario Matrix</h2><p>Bear / Base / Bull — 5-year DCF + Comparable Company Analysis</p></div>
+  <div class="scenario-grid">
+    <div class="s-card">
+      <span class="badge b-err" style="width:fit-content;">BEAR</span>
+      <div class="s-price">~$820</div>
+      <div class="s-upside s-dn">−18.1% from $1,001.54</div>
+      <div class="s-assume">20% AUM compression from market correction. HPS/GIP integration 6-month delay. Multiple de-rates to 17x fwd P/E. WACC 11.0% · g 2.0%.</div>
+    </div>
+    <div class="s-card base">
+      <span class="badge b-gold" style="width:fit-content;">BASE ✦ PRIMARY</span>
+      <div class="s-price">~$1,180</div>
+      <div class="s-upside s-up">+17.8% from $1,001.54</div>
+      <div class="s-assume">Management guidance execution: 5–7% organic base fee growth, 16% Aladdin ACV, 44–45% adj. margins. FY2026E consensus $28.5B revenue. WACC 9.5% · g 2.5%.</div>
+    </div>
+    <div class="s-card">
+      <span class="badge b-ok" style="width:fit-content;">BULL</span>
+      <div class="s-price">~$1,490</div>
+      <div class="s-upside s-up">+48.8% from $1,001.54</div>
+      <div class="s-assume">Aladdin ACV 20%+ via Preqin. Alternatives AUM → $850B. Multiple re-rates toward BX/KKR (29–39x). WACC 8.0% · g 3.25%. Fink 2030 target implies ~$2,100 at 14.4% IRR.</div>
+    </div>
+  </div>
+  <div class="s-foot">Targets are internal proprietary estimates derived from a 5-year DCF + Comparable Company Analysis. Not a solicitation. As of April 8, 2026.</div>
+
+  <div class="section-head"><h2>Valuation Bridge</h2><p>Implied price per share across methodologies</p></div>
+  <div class="card mb6">
+    <div class="chart-bridge"><canvas id="chartBridge"></canvas></div>
+  </div>
+
+  <div class="section-head"><h2>Comparable Company Analysis</h2><p>Re-rating peer set · click rows to expand context</p></div>
+  <div class="tbl-wrap">
+    <table class="ctbl" id="compTable">
+      <thead>
+        <tr>
+          <th data-col="company">Company</th>
+          <th data-col="ticker">Ticker</th>
+          <th data-col="aum">AUM</th>
+          <th data-col="pe">Fwd P/E</th>
+          <th data-col="ev">EV/EBITDA</th>
+          <th data-col="growth">Rev Growth</th>
+          <th data-col="target">Analyst PT</th>
+        </tr>
+      </thead>
+      <tbody id="compBody"></tbody>
+    </table>
+  </div>
+  <div class="txt-xs txt-faint mt4">Sources: AlphaSpread · GuruFocus · ValueInvesting.io · April 2026 · Click any row to expand competitive context</div>
+
+</div>
+</div><!-- /tab-valuation -->
+
+<!-- ══════════════════════════════════════════════════════════
+     TAB: COMPETITIVE
+══════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-competitive" role="tabpanel">
+<div class="panel">
+  <div class="date-stamp">April 8, 2026 &nbsp;·&nbsp; Competitive Moat Analysis</div>
+
+  <div class="section-head"><h2>Competitive Moat</h2><p>Four surfaces no single incumbent can replicate</p></div>
+  <div class="moat-grid">
+    <div class="moat-card">
+      <div class="moat-num">01 · Index &amp; ETF</div>
+      <div class="moat-title">iShares Platform Dominance</div>
+      <div class="moat-body">$5.5T in ETF AUM across US and international markets. $527B record net inflows in FY2025. 12% organic asset growth, 13% organic base fee growth. No ETF platform operates at this scale — the distribution moat compounds with every new ETF launch and market downturn.</div>
+      <span class="badge b-gold">$5.5T ETF AUM</span>
+    </div>
+    <div class="moat-card">
+      <div class="moat-num">02 · Alternatives</div>
+      <div class="moat-title">Private Markets Infrastructure</div>
+      <div class="moat-body">GIP (~$12.5B) created the 2nd-largest infrastructure manager globally. HPS adds $118B in private credit AUM, scaling BLK's credit franchise above $220B. Combined $423.6B alternatives AUM with $91B unfunded commitments. No traditional AM peer has this private markets footprint.</div>
+      <span class="badge b-teal">$423.6B Alts AUM</span>
+    </div>
+    <div class="moat-card">
+      <div class="moat-num">03 · Technology</div>
+      <div class="moat-title">Aladdin Operating System</div>
+      <div class="moat-body">Aladdin underpins risk management for $21.6T of institutional assets across 200+ clients. ACV grew 31% in FY2025 (16% organic + Preqin). Preqin transforms Aladdin from a risk OS into a private-markets data marketplace. Switching costs: 12–24 months of institutional disruption per client.</div>
+      <span class="badge b-muted">$21.6T Aladdin AUM</span>
+    </div>
+    <div class="moat-card">
+      <div class="moat-num">04 · Active</div>
+      <div class="moat-title">Active &amp; Multi-Asset Scale</div>
+      <div class="moat-body">$2.5T in institutional active AUM. LifePath target-date franchise drives wealth channel growth. Multi-asset outsourcing mandates generated $46B in net inflows in FY2025. Active strategies carry higher base fee rates — a critical buffer against passive fee compression across the total platform.</div>
+      <span class="badge b-muted">$2.5T Active AUM</span>
+    </div>
+  </div>
+
+  <!-- Re-Rating Path -->
+  <div class="rerate-wrap">
+    <div class="section-head" style="margin-bottom:0">
+      <h2>The Re-Rating Path</h2>
+      <p>From traditional AM floor to alternative asset manager ceiling</p>
+    </div>
+    <div class="rerate-scale">
+      <div class="rerate-node">
+        <div class="rerate-dot rd-floor">9.7x</div>
+        <div class="rerate-label">TROW Floor</div>
+        <div class="rerate-sub">Pure-play trad. AM<br>no platform transition</div>
+      </div>
+      <div class="rerate-node">
+        <div class="rerate-dot rd-current">~22x</div>
+        <div class="rerate-label">BLK Today</div>
+        <div class="rerate-sub">Fwd P/E (adj.)<br>between both poles</div>
+      </div>
+      <div class="rerate-node">
+        <div class="rerate-dot rd-mid">29.5x</div>
+        <div class="rerate-label">BX Midpoint</div>
+        <div class="rerate-sub">Pure-play alts<br>base re-rating ceiling</div>
+      </div>
+      <div class="rerate-node">
+        <div class="rerate-dot rd-ceil">39x</div>
+        <div class="rerate-label">KKR Ceiling</div>
+        <div class="rerate-sub">Insurance + wealth<br>bull-case target</div>
+      </div>
+    </div>
+    <p class="txt-xs txt-faint" style="margin-top:var(--s5);">BLK at ~22x adj. P/E sits between the 9.7x traditional AM floor and the 29–39x alternatives ceiling. As alternatives + technology revenue grows from ~18% toward 30%+ of total, the market will credit BLK at a platform premium. This multiple expansion is independent of AUM growth — it is a structural re-rating event driven by revenue mix.</p>
+  </div>
+
+  <!-- McKinsey thesis -->
+  <div class="card" style="border-left:2px solid var(--gold);">
+    <div class="section-label">McKinsey "Great Convergence" Thesis</div>
+    <div style="font-family:var(--display);font-size:1.0625rem;color:var(--text);margin-bottom:var(--s3);">"Traditional and alternative asset management are structurally merging — and the firms that span both will capture the economics of the combined industry."</div>
+    <div class="txt-sm txt-muted">BlackRock is the only manager of scale operating across all four surfaces simultaneously: index, active, alternatives, and technology. GIP, HPS, and Preqin are not opportunistic acquisitions — they are the execution of this convergence thesis. No peer can replicate this combination from scratch; the lead-time alone is five or more years.</div>
+  </div>
+
+</div>
+</div><!-- /tab-competitive -->
+
+<!-- ══════════════════════════════════════════════════════════
+     TAB: RISK
+══════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-risk" role="tabpanel">
+<div class="panel">
+  <div class="date-stamp">April 8, 2026 &nbsp;·&nbsp; Risk Register &nbsp;·&nbsp; 8 Items</div>
+
+  <div class="section-head"><h2>Risk Register</h2><p>Eight identified risks with severity ratings and mitigants · click any row to expand</p></div>
+  <div class="accordion" id="riskAccordion"></div>
+
+  <div style="margin-top:var(--s6);display:flex;gap:var(--s4);flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:var(--s2);font-size:.75rem;color:var(--text-muted);"><span class="badge b-err">High</span> Systemic — requires active monitoring</div>
+    <div style="display:flex;align-items:center;gap:var(--s2);font-size:.75rem;color:var(--text-muted);"><span class="badge b-warn">Medium</span> Manageable — mitigants in place</div>
+    <div style="display:flex;align-items:center;gap:var(--s2);font-size:.75rem;color:var(--text-muted);"><span class="badge b-muted">Low</span> Acknowledged — not thesis-altering</div>
+  </div>
+
+</div>
+</div><!-- /tab-risk -->
+
+<!-- ══════════════════════════════════════════════════════════
+     TAB: PROCESS
+══════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-process" role="tabpanel">
+<div class="panel">
+  <div class="date-stamp">April 8, 2026 &nbsp;·&nbsp; Perplexity Research Workflow Documentation</div>
+
+  <div class="section-head"><h2>Perplexity Research Process</h2><p>Five-stage AI-augmented investment research workflow — from initial inquiry to live intelligence artifact</p></div>
+  <div class="proc-tl" id="procTimeline"></div>
+
+  <hr class="divider">
+
+  <div class="section-head"><h2>What Perplexity Made Possible</h2></div>
+  <div class="plx-tiles">
+    <div class="plx-tile"><strong>40+ hrs → 1 Session</strong>Compressed institutional-grade research — SEC filings, analyst consensus, DCF modeling, and competitive analysis — into a single iterative AI-augmented workflow. From initial inquiry on April 2 to final publication on April 8.</div>
+    <div class="plx-tile"><strong>Apr 2 → Apr 8 Refresh</strong>Real-time data synchronization from initial inquiry through final publication. Analyst actions (Goldman $1,181 · Apr 7, Morgan Stanley $1,368 cut · Apr 1) captured and integrated same-day into the canonical data spine.</div>
+    <div class="plx-tile"><strong>Research → Artifact</strong>Financial modeling (5-year DCF, 3-scenario sensitivity), IC memo drafting, cross-document precision edits, and interactive dashboard artifact generation — all in a unified Perplexity workflow without leaving the platform.</div>
+  </div>
+
+  <div class="card mt6">
+    <div class="proc-meta">
+      <div class="proc-meta-item"><div class="proc-meta-label">Initial Inquiry</div><div class="proc-meta-val">April 2, 2026</div></div>
+      <div class="proc-meta-item"><div class="proc-meta-label">Data Refresh</div><div class="proc-meta-val">April 8, 2026</div></div>
+      <div class="proc-meta-item"><div class="proc-meta-label">Primary Sources</div><div class="proc-meta-val">25+</div></div>
+      <div class="proc-meta-item"><div class="proc-meta-label">Tools Used</div><div class="proc-meta-val">Deep Research · Finance · Computer</div></div>
+      <div class="proc-meta-item"><div class="proc-meta-label">Contest</div><div class="proc-meta-val">Perplexity Pitch Contest 2026</div></div>
+      <div class="proc-meta-item"><div class="proc-meta-label">Author</div><div class="proc-meta-val">Nicholas Hawkins · Hawkins Holdings</div></div>
+    </div>
+  </div>
+  <div class="txt-xs txt-faint mt4 italic">Disclaimer: This dashboard is prepared for the Perplexity Pitch Contest (April 2026) and does not constitute investment advice or a solicitation to buy or sell securities. All projections are estimates based on publicly available data and analyst consensus estimates.</div>
+
+</div>
+</div><!-- /tab-process -->
+
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   JAVASCRIPT
+══════════════════════════════════════════════════════════ */
+/* ── PITCH STATE (canonical April 8, 2026) ── */
+const S = {
+  price:           1001.54,
+  dayHigh:         1017.15,
+  dayLow:          995.78,
+  marketCap:       164900000000,
+  consensusTarget: 1239.26,
+  consensusUpside: 0.2373,
+  analystCount:    19,
+  earningsDate:    new Date('2026-04-21T08:00:00'),
+  aumTotal:        14.04,
+  activeTab:       'overview'
+};
+
+/* ── RISK DATA ── */
+const RISKS = [
+  { n:'01', title:'Fee Rate Compression from Passive Shift', sev:'Medium',
+    body:'The structural shift toward passive investing continues to compress average base fee rates industry-wide. BLK\'s blended fee rate has declined from ~24bps to ~18bps over five years as the AUM mix shifts toward lower-fee index products.',
+    mit:'Private markets mix shift (alts carry higher fees), Aladdin SaaS recurring revenue is not AUM-fee-linked, and active ETF growth is accretive to fee rates relative to passive.' },
+  { n:'02', title:'AUM Outflows in Risk-Off Environment', sev:'High',
+    body:'A market correction or risk-off flight could trigger significant AUM outflows, compressing base fee revenue. The bear case models a 20% AUM compression, reducing FY2026E revenue from $28.5B to approximately $23.7B.',
+    mit:'Multi-asset, global client diversification across 100+ countries and six continents. $698B net inflows in FY2025 demonstrates franchise resilience. Aladdin and tech revenue not correlated to AUM mark-to-market levels.' },
+  { n:'03', title:'M&A Integration Execution (GIP, HPS, Preqin)', sev:'High',
+    body:'Three major acquisitions closed within 12 months — GIP ($12.5B, Oct 2024), Preqin ($3.2B, Mar 2025), HPS ($118B credit AUM, Jul 2025). Integration risk is elevated: talent retention, system integration, and culture alignment all require execution.',
+    mit:'BlackRock\'s 20-year acquisition track record (iShares, BGI, Aperio). Early HPS synergy data reported positive. Sequential deal structure limits simultaneous integration burden on management bandwidth.' },
+  { n:'04', title:'Regulatory / ESG Political Pressure', sev:'Medium',
+    body:'BLK faces political and regulatory pressure from both directions — anti-ESG backlash from U.S. state treasurers and enhanced ESG requirements in the EU. FSOC designation risk and congressional scrutiny of passive ownership concentration add headline risk.',
+    mit:'Geographic and product diversification insulates from single-jurisdiction risk. BLK has engaged FSOC proactively. ESG product suite is opt-in — clients choose product preferences.' },
+  { n:'05', title:'Key-Person Risk (Fink Succession)', sev:'Medium',
+    body:'Larry Fink is synonymous with BlackRock globally. His annual letter and sovereign client relationships represent competitive advantages that are difficult to transfer to successors, particularly in the near term.',
+    mit:'Deep bench: Rob Kapito (President), Martin Small, and a seasoned leadership team have been groomed for decades. Institutionalized processes mean the firm does not operationally depend on Fink for daily decisions.' },
+  { n:'06', title:'Tech Platform Competition (Aladdin Moat Erosion)', sev:'Medium',
+    body:'Bloomberg, MSCI, SimCorp, and emerging fintech platforms are competing for Aladdin\'s risk management market. Mid-market segments may be underserved by Aladdin\'s pricing, creating an opening for leaner competitors.',
+    mit:'Network effects: every new Aladdin client adds data density improving the platform for all. Switching costs are 12–24 months of institutional disruption. Preqin integration extends the moat into private markets data, a segment competitors cannot easily enter.' },
+  { n:'07', title:'Rate Environment / Duration Risk on Bond AUM', sev:'Medium',
+    body:'Higher-for-longer interest rates compress fixed income AUM values and can drive outflows from duration-sensitive strategies. BlackRock manages significant fixed income AUM across institutional and retail clients.',
+    mit:'BLK\'s fee revenue is earned on AUM levels, not on duration-adjusted NAV — making it less mark-to-market sensitive than perceived. Technology and alternatives revenue provides an uncorrelated hedge to rate-driven AUM fluctuation.' },
+  { n:'08', title:'Valuation Premium vs. Peers', sev:'Low',
+    body:'BLK trades at a premium to traditional asset manager peers (~22x adj. P/E vs. TROW at 9.7x). If the platform re-rating thesis fails to materialize on the expected timeline, the stock could de-rate toward traditional manager multiples.',
+    mit:'The premium is justified by Aladdin SaaS re-rating potential, alternatives growth runway, and the unique four-surface competitive position. Bear case DCF ($820) still represents the downside floor — it is not zero.' }
+];
+
+/* ── COMP DATA ── */
+const COMPS = [
+  { company:'BlackRock',   ticker:'BLK',  aum:'$14.04T', pe:'~22x', ev:'17.6x', growth:'+18.7%', target:'$1,239', isBLK:true,
+    drawer:'BLK trades at ~22x adj. forward P/E and 17.6x EV/EBITDA — positioned between the traditional AM floor (TROW 9.7x) and the alternatives ceiling (BX 29.5x, KKR 39x). The investment thesis is that this gap closes as alternatives + tech revenue grows from ~18% toward 30%+ of total. Consensus target $1,239.26 from 19 analysts as of April 8, 2026. Sources: AlphaSpread, GuruFocus, Benzinga.' },
+  { company:'Blackstone',  ticker:'BX',   aum:'~$1.1T', pe:'29.5x', ev:'19.4x', growth:'—', target:'—', isBLK:false,
+    drawer:'Largest alternative asset manager by market cap (~$137B). 29.5x P/E reflects full credit for its pure-play alternatives franchise and recurring fee-related earnings. BLK\'s growing alternatives AUM ($423.6B) is the primary catalyst for re-rating toward this range. Serves as the base case re-rating ceiling in the valuation model. Source: AlphaSpread Apr 2026.' },
+  { company:'KKR',         ticker:'KKR',  aum:'~$640B', pe:'39.0x', ev:'—', growth:'—', target:'—', isBLK:false,
+    drawer:'39x P/E premium reflects insurance balance sheet integration (Global Atlantic) and accelerating private wealth channel penetration. Serves as the bull-case multiple ceiling for BLK\'s combined Aladdin + alternatives re-rating. The KKR comp becomes relevant if BLK successfully penetrates the insurance AUM channel at scale via HPS. Source: AlphaSpread Apr 2026.' },
+  { company:'Apollo',      ticker:'APO',  aum:'~$785B', pe:'19.9x', ev:'—', growth:'—', target:'—', isBLK:false,
+    drawer:'19.9x P/E reflects a credit-heavy mix with AUM-correlated fee revenue. Closest structural analog to BLK\'s HPS private credit build-out ($118B AUM at close, credit franchise scaled above $220B). Apollo\'s credit franchise matured over a decade — HPS accelerates BLK\'s comparable timeline significantly. Source: AlphaSpread Apr 2026.' },
+  { company:'T. Rowe Price',ticker:'TROW',aum:'~$1.6T', pe:'9.7x', ev:'—', growth:'—', target:'—', isBLK:false,
+    drawer:'9.7x P/E illustrates the valuation floor for pure-play traditional active managers without a platform transition narrative. TROW faces fee compression with no Aladdin moat, no alternatives scale, and no meaningful ETF platform. This is the de-rating risk for BLK if the platform thesis fails — and it sets the bear case floor multiple. Source: AlphaSpread Apr 2026.' }
+];
+
+/* ── ANALYST TARGETS (dot-plot) ── */
+const TARGETS = [
+  { target:1290, firm:'Barclays',               recency:'recent' },
+  { target:1181, firm:'Goldman Sachs',           recency:'recent' },
+  { target:1368, firm:'Morgan Stanley',          recency:'recent' },
+  { target:1280, firm:'UBS',                     recency:'old' },
+  { target:1340, firm:'KBW',                     recency:'old' },
+  { target:1209, firm:'TD Cowen',                recency:'old' },
+  { target:1350, firm:'Barclays (prior)',         recency:'old' },
+  { target:1456, firm:'B of A Securities',       recency:'old' },
+  { target:1486, firm:'Morgan Stanley (prior)',   recency:'old' },
+];
+
+/* ── PROCESS STAGES ── */
+const STAGES = [
+  { badge:'Evidence Spine · 40+ Sources', yah:false,
+    title:'Deep Research Initiation',
+    desc:'Multi-round web search establishing BLK\'s competitive position, AUM data ($14.04T FY2025), Aladdin architecture, and M&A timeline. Perplexity Search synthesized SEC filings, earnings transcripts, sell-side consensus, and press releases concurrently — returning fully cited, queryable outputs spanning the full FY2022–FY2025 period.',
+    icon:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>` },
+  { badge:'Financial Dataset · Apr 8 Mark', yah:false,
+    title:'Premium Data Pull',
+    desc:'Structured financial data extraction: quarterly financials (FY2022–FY2025), segment revenue breakdown, analyst consensus estimates (19 analysts, $1,239.26 avg PT), and price history. Premium data tools surfaced real-time analyst actions including Goldman Sachs $1,181 (Apr 7) and Morgan Stanley PT cut $1,550 → $1,368 (Apr 1) — both integrated into the canonical data spine.',
+    icon:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>` },
+  { badge:'3-Scenario Valuation Model', yah:false,
+    title:'Financial Modeling',
+    desc:'DCF model construction with explicit 5-year forecast (FY2026E–FY2029E), comparable company analysis (BX/KKR/APO/TROW re-rating peer set), and sum-of-parts valuation. Perplexity Computer executed Python calculations across all WACC and terminal growth rate permutations. Three scenario outputs: Bear ~$820, Base ~$1,180, Bull ~$1,490 — each with explicit assumption tables.',
+    icon:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>` },
+  { badge:'Institutional IC Memo', yah:false,
+    title:'IC Memo Drafting',
+    desc:'Investment Committee memo drafted with AI-assisted synthesis of all research strands. Structured per institutional convention with 7 sections: Executive Summary, Investment Thesis, Financial Analysis, Competitive Landscape, Risk Register, Portfolio Fit, and Conclusion. Cross-document precision edits applied: GIP deal value corrected ($3B cash → ~$12.5B total), AUM badge updated ($11.6T → $14.04T), analyst actions added (Goldman, Morgan Stanley).',
+    icon:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>` },
+  { badge:'YOU ARE HERE', yah:true,
+    title:'Live Intelligence Dashboard',
+    desc:'This interactive artifact — price tracking, analyst intelligence, catalyst countdown, competitive moat analysis, risk register, and Perplexity workflow documentation — built with Perplexity Computer as a single-file HTML/CSS/JS artifact. Dark-mode institutional command center design. All data cross-validated against primary sources as of April 8, 2026.',
+    icon:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>` },
+];
+
+/* ══════════════════════════════════════════════════════════
+   DOM BUILDERS
+══════════════════════════════════════════════════════════ */
+function buildRiskAccordion() {
+  const el = document.getElementById('riskAccordion');
+  RISKS.forEach(r => {
+    const sc = r.sev==='High'?'b-err':r.sev==='Medium'?'b-warn':'b-muted';
+    const item = document.createElement('div');
+    item.className = 'acc-item';
+    item.innerHTML = `
+      <button class="acc-trigger" aria-expanded="false">
+        <div class="acc-tl">
+          <span class="risk-num">${r.n}</span>
+          <span class="risk-title">${r.title}</span>
+        </div>
+        <span class="badge ${sc}" style="flex-shrink:0">${r.sev}</span>
+        <svg class="acc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="acc-body">
+        <div class="acc-content">
+          <p>${r.body}</p>
+          <div class="mitigant">${r.mit}</div>
+        </div>
+      </div>`;
+    item.querySelector('.acc-trigger').addEventListener('click', () => {
+      const open = item.classList.contains('open');
+      document.querySelectorAll('.acc-item.open').forEach(x => {
+        x.classList.remove('open');
+        x.querySelector('.acc-trigger').setAttribute('aria-expanded','false');
+      });
+      if (!open) {
+        item.classList.add('open');
+        item.querySelector('.acc-trigger').setAttribute('aria-expanded','true');
+      }
+    });
+    el.appendChild(item);
+  });
+}
+
+function buildCompTable() {
+  const tbody = document.getElementById('compBody');
+  COMPS.forEach((c, i) => {
+    const tr = document.createElement('tr');
+    tr.className = c.isBLK ? 'blk' : '';
+    const ptHtml = c.target !== '—'
+      ? `<span style="color:var(--gold)">${c.target}</span>`
+      : '—';
+    tr.innerHTML = `
+      <td class="co">${c.isBLK ? '<strong>'+c.company+'</strong>' : c.company}</td>
+      <td class="tk">${c.ticker}</td>
+      <td class="mn">${c.aum}</td>
+      <td class="mn ${c.isBLK?'':'mut'}">${c.pe}</td>
+      <td class="mn mut">${c.ev}</td>
+      <td class="mn mut">${c.growth}</td>
+      <td class="mn">${ptHtml}</td>`;
+
+    const dr = document.createElement('tr');
+    dr.className = 'c-drawer';
+    dr.id = 'dr-'+i;
+    dr.innerHTML = `<td colspan="7">${c.drawer}</td>`;
+
+    tr.addEventListener('click', () => {
+      const isOpen = dr.classList.contains('open');
+      document.querySelectorAll('.c-drawer.open').forEach(x => x.classList.remove('open'));
+      if (!isOpen) dr.classList.add('open');
+    });
+    tbody.appendChild(tr);
+    tbody.appendChild(dr);
+  });
+}
+
+function buildProcessTimeline() {
+  const el = document.getElementById('procTimeline');
+  STAGES.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'proc-stage';
+    const bClass = s.yah ? 'stage-badge yah' : 'stage-badge';
+    div.innerHTML = `
+      <div class="stage-icon">${s.icon}</div>
+      <div class="stage-content">
+        <div class="stage-head">${s.title}<span class="${bClass}">${s.badge}</span></div>
+        <div class="stage-desc">${s.desc}</div>
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   THEME TOGGLE
+══════════════════════════════════════════════════════════ */
+let dark = true;
+document.getElementById('themeBtn').addEventListener('click', () => {
+  dark = !dark;
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  document.getElementById('ico-sun').style.display  = dark ? '' : 'none';
+  document.getElementById('ico-moon').style.display = dark ? 'none' : '';
+  // Destroy and re-init charts so they pick up new palette
+  Object.values(charts).forEach(c => c && c.destroy());
+  Object.keys(charts).forEach(k => charts[k] = null);
+  inited = {};
+  initForTab(S.activeTab);
+});
+
+/* ══════════════════════════════════════════════════════════
+   TAB ROUTING
+══════════════════════════════════════════════════════════ */
+const panels = document.querySelectorAll('.tab-panel');
+const btns   = document.querySelectorAll('.nav-tab');
+
+function switchTab(id) {
+  S.activeTab = id;
+  panels.forEach(p => p.classList.remove('active'));
+  btns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  const p = document.getElementById('tab-'+id);
+  const b = document.querySelector(`[data-tab="${id}"]`);
+  if (p) p.classList.add('active');
+  if (b) { b.classList.add('active'); b.setAttribute('aria-selected','true'); }
+  initForTab(id);
+  if (id === 'overview') runCountUp();
+}
+
+btns.forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+
+/* ══════════════════════════════════════════════════════════
+   COUNTDOWN TIMER
+══════════════════════════════════════════════════════════ */
+function pad(n){ return String(n).padStart(2,'0'); }
+function tick() {
+  const diff = S.earningsDate - Date.now();
+  if (diff <= 0) {
+    ['d','h','m','s'].forEach(id => document.getElementById('cd-'+id).textContent = '00');
+    return;
+  }
+  document.getElementById('cd-d').textContent = pad(Math.floor(diff/86400000));
+  document.getElementById('cd-h').textContent = pad(Math.floor((diff%86400000)/3600000));
+  document.getElementById('cd-m').textContent = pad(Math.floor((diff%3600000)/60000));
+  document.getElementById('cd-s').textContent = pad(Math.floor((diff%60000)/1000));
+}
+tick();
+setInterval(tick, 1000);
+
+/* ══════════════════════════════════════════════════════════
+   COUNT-UP ANIMATION
+══════════════════════════════════════════════════════════ */
+function countUp(el, from, to, dur, fmt) {
+  const t0 = performance.now();
+  (function frame(now) {
+    const p = Math.min((now-t0)/dur, 1);
+    const ease = 1-Math.pow(1-p,3);
+    el.textContent = fmt(from+(to-from)*ease);
+    if (p < 1) requestAnimationFrame(frame);
+  })(performance.now());
+}
+function runCountUp() {
+  const el = document.getElementById('heroPrice');
+  if (el) countUp(el, 950, S.price, 900,
+    v => '$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+}
+
+/* ══════════════════════════════════════════════════════════
+   CHARTS — lazy init per tab
+══════════════════════════════════════════════════════════ */
+const charts = {};
+let inited = {};
+
+function initForTab(id) {
+  if (id === 'overview' && !inited.overview) {
+    inited.overview = true;
+    initSparkline();
+    initDonut();
+    initDotplot();
+  }
+  if (id === 'valuation' && !inited.valuation) {
+    inited.valuation = true;
+    initBridge();
+  }
+}
+
+/* Sparkline — AUM 2019–2025 */
+function initSparkline() {
+  const ctx = document.getElementById('chartSparkline');
+  if (!ctx) return;
+  charts.sparkline = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels:['2019','2020','2021','2022','2023','2024','2025'],
+      datasets:[{
+        data:[7.43,8.68,10.01,8.59,10.01,11.55,14.04],
+        borderColor:'#d19900',
+        backgroundColor:'rgba(209,153,0,0.08)',
+        borderWidth:2,
+        pointRadius:3,
+        pointBackgroundColor:'#d19900',
+        pointBorderColor:'transparent',
+        fill:true,tension:0.35
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{label:c=>'$'+c.raw+'T AUM'},
+          backgroundColor:'rgba(22,21,19,0.95)',
+          titleColor:'#8a877e',bodyColor:'#d19900',
+          borderColor:'rgba(232,229,223,0.10)',borderWidth:1
+        }
+      },
+      scales:{
+        x:{display:true,grid:{display:false},
+          ticks:{color:'#524f48',font:{size:9,family:'JetBrains Mono'}}},
+        y:{display:false}
+      },
+      animation:{duration:800,easing:'easeOutCubic'}
+    }
+  });
+}
+
+/* Donut — Revenue Mix */
+function initDonut() {
+  const ctx = document.getElementById('chartDonut');
+  if (!ctx) return;
+  const borderClr = dark ? '#161513' : '#f9f8f5';
+  charts.donut = new Chart(ctx, {
+    type:'doughnut',
+    data:{
+      labels:['Advisory Fees','Aladdin / Tech','Distribution & Other'],
+      datasets:[{
+        data:[76,8,16],
+        backgroundColor:['#d19900','#4f98a3','#524f48'],
+        borderColor:borderClr,
+        borderWidth:3,hoverOffset:4
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'68%',
+      plugins:{
+        legend:{display:true,position:'right',
+          labels:{color:'#8a877e',font:{size:9.5,family:'Satoshi'},padding:8,boxWidth:9,boxHeight:9}},
+        tooltip:{
+          callbacks:{label:c=>` ${c.label}: ${c.raw}%`},
+          backgroundColor:'rgba(22,21,19,0.95)',
+          titleColor:'#8a877e',bodyColor:'#e8e5df',
+          borderColor:'rgba(232,229,223,0.10)',borderWidth:1
+        }
+      },
+      animation:{duration:800,easing:'easeOutCubic'}
+    }
+  });
+}
+
+/* Dot-plot — Analyst price targets */
+function initDotplot() {
+  const ctx = document.getElementById('chartDotplot');
+  if (!ctx) return;
+
+  const jitter = {};
+  const recent = [], old = [];
+  TARGETS.forEach(a => {
+    const k = a.target;
+    if (!jitter[k]) jitter[k] = 0; else jitter[k] += 0.22;
+    const pt = {x:a.target, y:0.5+jitter[k], label:a.firm};
+    if (a.recency==='recent') recent.push(pt); else old.push(pt);
+  });
+
+  const priceLinePlugin = {
+    id:'priceLines',
+    beforeDraw(chart) {
+      const {ctx:c, scales} = chart;
+      const xCur = scales.x.getPixelForValue(S.price);
+      const xCon = scales.x.getPixelForValue(S.consensusTarget);
+      const yT = scales.y.top, yB = scales.y.bottom;
+      // Current price — solid gold
+      c.save();
+      c.beginPath(); c.moveTo(xCur,yT); c.lineTo(xCur,yB);
+      c.strokeStyle='#d19900'; c.lineWidth=2; c.stroke(); c.restore();
+      // Consensus — dashed teal
+      c.save();
+      c.setLineDash([4,3]);
+      c.beginPath(); c.moveTo(xCon,yT); c.lineTo(xCon,yB);
+      c.strokeStyle='#4f98a3'; c.lineWidth=1.5; c.stroke(); c.restore();
+    }
+  };
+
+  charts.dotplot = new Chart(ctx, {
+    type:'scatter',
+    plugins:[priceLinePlugin],
+    data:{
+      datasets:[
+        {label:'Last 30 days',data:recent,backgroundColor:'#d19900',pointRadius:7,pointHoverRadius:9},
+        {label:'Prior actions',data:old,   backgroundColor:'#524f48',pointRadius:6,pointHoverRadius:8}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{title:()=>'',label:c=>`${c.raw.label}: $${c.raw.x.toLocaleString()}`},
+          backgroundColor:'rgba(22,21,19,0.95)',
+          bodyColor:'#e8e5df',
+          borderColor:'rgba(232,229,223,0.10)',borderWidth:1
+        }
+      },
+      scales:{
+        x:{type:'linear',min:900,max:1550,
+          grid:{color:'rgba(232,229,223,0.06)'},
+          ticks:{color:'#524f48',font:{size:9.5,family:'JetBrains Mono'},
+            callback:v=>'$'+v.toLocaleString(),stepSize:100}},
+        y:{display:false,min:0,max:2}
+      },
+      animation:{duration:600,easing:'easeOutCubic'}
+    }
+  });
+}
+
+/* Bridge Chart */
+function initBridge() {
+  const ctx = document.getElementById('chartBridge');
+  if (!ctx) return;
+  charts.bridge = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['Current Price','Peer Median (~22x)','DCF Intrinsic — Base','Bull Case Target'],
+      datasets:[{
+        data:[1001.54,1050,1180,1490],
+        backgroundColor:['#524f48','#4f98a3','#d19900','#6daa45'],
+        borderRadius:6,borderSkipped:false
+      }]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{label:c=>' $'+c.raw.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
+          backgroundColor:'rgba(22,21,19,0.95)',
+          bodyColor:'#e8e5df',
+          borderColor:'rgba(232,229,223,0.10)',borderWidth:1
+        }
+      },
+      scales:{
+        x:{min:800,max:1600,
+          grid:{color:'rgba(232,229,223,0.06)'},
+          ticks:{color:'#524f48',font:{size:9.5,family:'JetBrains Mono'},
+            callback:v=>'$'+v.toLocaleString()}},
+        y:{grid:{display:false},
+          ticks:{color:'#8a877e',font:{size:11,family:'Satoshi'}}}
+      },
+      animation:{duration:800,easing:'easeOutCubic'}
+    }
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   BOOT
+══════════════════════════════════════════════════════════ */
+buildRiskAccordion();
+buildCompTable();
+buildProcessTimeline();
+
+// Expose init to global scope and boot
+window._blkInit = initForTab;
+window._blkCountUp = runCountUp;
+
+function bootDashboard() {
+  initForTab('overview');
+  runCountUp();
+}
+
+if (document.readyState === 'complete') {
+  requestAnimationFrame(bootDashboard);
+} else {
+  window.addEventListener('load', bootDashboard);
+}
+</script>
+</body>
+</html>
