@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BLK Intelligence Dashboard | BlackRock Long Position · April 8, 2026</title>
-<meta name="description" content="BlackRock (NYSE: BLK) institutional investment intelligence dashboard — Perplexity Pitch Contest 2026 | Nicholas Hawkins / Hawkins Holdings">
+<meta name="description" content="BlackRock (NYSE: BLK) institutional investment intelligence dashboard — Perplexity Pitch Contest 2026 | Nicholas Hawkins / Texas Southern University">
 
 <!-- Preconnect -->
 <link rel="preconnect" href="https://api.fontshare.com">
@@ -503,6 +503,51 @@ table.ctbl{width:100%;border-collapse:collapse;font-size:.8125rem}
 .txt-faint{color:var(--text-faint)}.txt-muted{color:var(--text-muted)}
 .txt-xs{font-size:.6875rem}.txt-sm{font-size:.8125rem}
 .italic{font-style:italic}
+
+/* ══════════════════════════════════════════════════════════
+   ACQUISITION DETAIL MODAL
+══════════════════════════════════════════════════════════ */
+.acq-modal-overlay{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity 240ms var(--ease-out);
+  padding:var(--s6);
+}
+.acq-modal-overlay.open{opacity:1;pointer-events:all}
+.acq-modal-box{
+  background:var(--surface-2);border:1px solid var(--border);
+  border-radius:14px;padding:var(--s8);max-width:500px;width:100%;
+  position:relative;max-height:85vh;overflow-y:auto;
+  transform:translateY(16px) scale(0.98);
+  transition:transform 240ms var(--ease-out);
+}
+.acq-modal-overlay.open .acq-modal-box{transform:translateY(0) scale(1)}
+.acq-modal-close{
+  position:absolute;top:var(--s4);right:var(--s4);
+  width:28px;height:28px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--border);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--text-muted);font-size:14px;font-weight:700;
+  transition:color var(--t),background var(--t);line-height:1;
+}
+.acq-modal-close:hover{color:var(--text);background:var(--surface-2)}
+.acq-modal-title{font-family:var(--display);font-size:1.15rem;color:var(--text);margin-bottom:var(--s2);padding-right:var(--s8)}
+.acq-modal-meta{display:flex;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s5)}
+.acq-modal-kv{display:flex;flex-direction:column;gap:2px}
+.acq-modal-kv-label{font-size:.6875rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em}
+.acq-modal-kv-val{font-family:var(--mono);font-size:.875rem;color:var(--gold);font-variant-numeric:tabular-nums lining-nums}
+.acq-modal-headline{font-size:.875rem;color:var(--text-muted);margin-bottom:var(--s4);padding:var(--s3) var(--s4);background:var(--surface);border-radius:8px;border-left:2px solid var(--gold)}
+.acq-modal-points{list-style:none;padding:0;display:flex;flex-direction:column;gap:var(--s2)}
+.acq-modal-points li{font-size:.8125rem;color:var(--text-muted);line-height:1.6;padding-left:var(--s4);position:relative}
+.acq-modal-points li::before{content:'→';position:absolute;left:0;color:var(--gold)}
+.acq-modal-source{margin-top:var(--s5);padding-top:var(--s4);border-top:1px solid var(--border)}
+.acq-modal-source a{font-size:.75rem;color:var(--teal);text-decoration:underline;text-underline-offset:3px}
+/* hover glow on acq nodes */
+.acq-node[data-acq]:hover .acq-dot{box-shadow:0 0 0 4px rgba(209,153,0,0.25)!important}
+.acq-node[data-acq]:hover .acq-label{color:var(--gold)!important}
+
 </style>
 </head>
 <body>
@@ -512,12 +557,7 @@ table.ctbl{width:100%;border-collapse:collapse;font-size:.8125rem}
 ══════════════════════════════════════════════════════════ -->
 <nav class="nav" role="navigation" aria-label="Dashboard navigation">
   <a href="#" class="nav-logo" aria-label="BLK Intelligence Dashboard home">
-    <!-- Geometric BLK lettermark SVG -->
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-      <rect width="28" height="28" rx="6" fill="rgba(209,153,0,0.14)"/>
-      <path d="M7 7h3.4c2.1 0 3.7 1.4 3.7 3.5 0 1.1-.46 2-1.16 2.46 1.08.44 1.86 1.6 1.86 2.84 0 2.3-1.7 3.5-4.1 3.5H7V7zm3.2 5.1c.9 0 1.5-.53 1.5-1.5s-.6-1.42-1.5-1.42H9.2v2.92h1zm.36 5.3c.98 0 1.6-.62 1.6-1.6s-.62-1.6-1.6-1.6H9.2v3.2h1.36zM16.5 7h2.3v14h-2.3V7z" fill="#d19900"/>
-    </svg>
-    <span class="nav-wordmark">BLK</span>
+    <span class="nav-wordmark" style="font-family:var(--mono);font-size:1rem;font-weight:700;letter-spacing:.12em;color:var(--gold);border:1.5px solid rgba(209,153,0,0.40);padding:4px 10px;border-radius:5px;">BLK</span>
   </a>
 
   <div class="nav-tabs" role="tablist" aria-label="Dashboard sections">
@@ -550,7 +590,7 @@ table.ctbl{width:100%;border-collapse:collapse;font-size:.8125rem}
 ══════════════════════════════════════════════════════════ -->
 <div class="tab-panel active" id="tab-overview" role="tabpanel">
 <div class="panel">
-  <div class="date-stamp">April 8, 2026 &nbsp;·&nbsp; Pre-Q1 2026 Earnings &nbsp;·&nbsp; Long Thesis Active &nbsp;·&nbsp; 19 Analysts</div>
+  <div class="date-stamp">April 8, 2026 &nbsp;·&nbsp; Pre-Q1 2026 Earnings &nbsp;·&nbsp; Long Thesis Active &nbsp;·&nbsp; <a href="https://www.benzinga.com/quote/BLK/analyst-ratings" target="_blank" rel="noopener" style="color:var(--text-faint);text-decoration:underline;text-underline-offset:3px;">19 Analysts ↗</a></div>
 
   <!-- MODULE A — HERO -->
   <div class="hero">
@@ -565,7 +605,7 @@ table.ctbl{width:100%;border-collapse:collapse;font-size:.8125rem}
           <span class="badge b-gold">PT $1,239.26</span>
           <span class="pill p-ok">↑ +23.7% upside</span>
           <span class="badge b-muted">Mkt Cap ~$164.9B</span>
-          <span class="badge b-muted">19 Analysts</span>
+          <a href="https://www.benzinga.com/quote/BLK/analyst-ratings" target="_blank" rel="noopener" class="badge b-muted" style="text-decoration:none;cursor:pointer;" title="Full analyst ratings on Benzinga · Apr 8, 2026">19 Analysts ↗</a>
         </div>
       </div>
       <div class="hero-stats">
@@ -597,29 +637,33 @@ table.ctbl{width:100%;border-collapse:collapse;font-size:.8125rem}
       <div class="t-body">GIP (~$12.5B, Oct 2024), Preqin ($3.2B, Mar 2025), and HPS ($118B private credit AUM, Jul 2025) create a private credit + infrastructure + data trifecta that no passive-only incumbent can replicate.</div>
       <div class="data-badge">$423.6B Alternatives AUM</div>
       <div class="acq-tl" style="margin-top:6px;">
-        <div class="acq-node">
+        <div class="acq-node" data-acq="GIP" role="button" tabindex="0" title="Click for acquisition detail" style="cursor:pointer;">
           <div class="acq-dot g"></div>
-          <div class="acq-label">GIP</div>
+          <div class="acq-label" style="transition:color .15s">GIP</div>
           <div class="acq-date">Oct 2024</div>
           <div class="acq-detail">~$12.5B<br>infra mgr</div>
+          <div style="font-size:8.5px;color:var(--gold);margin-top:2px;">tap for detail</div>
         </div>
-        <div class="acq-node">
+        <div class="acq-node" data-acq="Preqin" role="button" tabindex="0" title="Click for acquisition detail" style="cursor:pointer;">
           <div class="acq-dot t"></div>
-          <div class="acq-label">Preqin</div>
+          <div class="acq-label" style="transition:color .15s">Preqin</div>
           <div class="acq-date">Mar 2025</div>
           <div class="acq-detail">$3.2B<br>data layer</div>
+          <div style="font-size:8.5px;color:var(--teal);margin-top:2px;">tap for detail</div>
         </div>
-        <div class="acq-node">
+        <div class="acq-node" data-acq="HPS" role="button" tabindex="0" title="Click for acquisition detail" style="cursor:pointer;">
           <div class="acq-dot g"></div>
-          <div class="acq-label">HPS</div>
+          <div class="acq-label" style="transition:color .15s">HPS</div>
           <div class="acq-date">Jul 2025</div>
           <div class="acq-detail">$118B<br>credit</div>
+          <div style="font-size:8.5px;color:var(--gold);margin-top:2px;">tap for detail</div>
         </div>
-        <div class="acq-node">
+        <div class="acq-node" data-acq="FY2025" role="button" tabindex="0" title="Click for full-year summary" style="cursor:pointer;">
           <div class="acq-dot s"></div>
-          <div class="acq-label">FY2025</div>
+          <div class="acq-label" style="transition:color .15s">FY2025</div>
           <div class="acq-date">Dec 2025</div>
           <div class="acq-detail">$423.6B<br>alts AUM</div>
+          <div style="font-size:8.5px;color:var(--success);margin-top:2px;">tap for detail</div>
         </div>
       </div>
     </div>
@@ -652,38 +696,38 @@ table.ctbl{width:100%;border-collapse:collapse;font-size:.8125rem}
       <div class="section-label">Recent Analyst Actions</div>
       <div class="action-list">
         <div class="action-row">
-          <span class="action-firm">Barclays</span>
+          <a href="https://www.marketbeat.com/stocks/NYSE/BLK/forecast/" target="_blank" rel="noopener" class="action-firm" style="text-decoration:none;color:inherit;" title="Barclays Overweight · $1,290 · Apr 8, 2026 — Full BLK analyst coverage">Barclays ↗</a>
           <span class="pill p-ok" style="font-size:10px;padding:2px 8px;flex-shrink:0;">Overweight</span>
           <span class="action-target">$1,290</span>
           <span class="action-date">Apr 8</span>
         </div>
         <div class="action-row">
-          <span class="action-firm">Goldman Sachs</span>
+          <a href="https://www.benzinga.com/quote/BLK/analyst-ratings" target="_blank" rel="noopener" class="action-firm" style="text-decoration:none;color:inherit;" title="Goldman Sachs Buy · $1,181 · Apr 7, 2026 — BLK analyst ratings">Goldman Sachs ↗</a>
           <span class="pill p-ok" style="font-size:10px;padding:2px 8px;flex-shrink:0;">Buy</span>
           <span class="action-target">$1,181</span>
           <span class="action-date">Apr 7</span>
         </div>
         <div class="action-row">
-          <span class="action-firm">Morgan Stanley</span>
+          <a href="https://www.marketbeat.com/instant-alerts/morgan-stanley-cuts-blackrock-nyseblk-price-target-to-136800-2026-04-01/" target="_blank" rel="noopener" class="action-firm" style="text-decoration:none;color:inherit;" title="Morgan Stanley cut PT $1,550→$1,368 · Apr 1, 2026 — MarketBeat coverage">Morgan Stanley ↗</a>
           <span class="pill p-ok" style="font-size:10px;padding:2px 8px;flex-shrink:0;">Overweight</span>
           <span class="action-target">$1,368</span>
           <span class="action-date">Apr 1</span>
         </div>
         <div class="action-row">
-          <span class="action-firm">UBS</span>
+          <a href="https://finance.yahoo.com/news/blackrock-blk-delivers-strong-results-133407172.html" target="_blank" rel="noopener" class="action-firm" style="text-decoration:none;color:inherit;" title="UBS Buy upgrade · $1,280 · Feb 23, 2026">UBS ↗</a>
           <span class="pill p-ok" style="font-size:10px;padding:2px 8px;flex-shrink:0;">Buy</span>
           <span class="action-target">$1,280</span>
           <span class="action-date">Feb 23</span>
         </div>
         <div class="action-row">
-          <span class="action-firm">KBW</span>
+          <a href="https://www.marketbeat.com/stocks/NYSE/BLK/forecast/" target="_blank" rel="noopener" class="action-firm" style="text-decoration:none;color:inherit;" title="KBW Outperform · $1,340 · Jan 16, 2026">KBW ↗</a>
           <span class="pill p-ok" style="font-size:10px;padding:2px 8px;flex-shrink:0;">Outperform</span>
           <span class="action-target">$1,340</span>
           <span class="action-date">Jan 16</span>
         </div>
       </div>
       <div class="consensus-bar">
-        <div class="txt-xs txt-faint" style="margin-bottom:3px;">Consensus · 19 Analysts · Apr 8, 2026</div>
+        <div class="txt-xs txt-faint" style="margin-bottom:3px;">Consensus · <a href="https://www.benzinga.com/quote/BLK/analyst-ratings" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px;">19 Analysts ↗</a> · Apr 8, 2026</div>
         <div class="consensus-val">$1,239.26</div>
       </div>
     </div>
@@ -736,6 +780,15 @@ table.ctbl{width:100%;border-collapse:collapse;font-size:.8125rem}
 <div class="panel">
   <div class="date-stamp">April 8, 2026 &nbsp;·&nbsp; 5-Year DCF + Comp Analysis &nbsp;·&nbsp; Not a Solicitation</div>
 
+  <!-- Official Recommendation Banner -->
+  <div style="background:linear-gradient(135deg,rgba(109,170,69,0.10) 0%,rgba(209,153,0,0.08) 100%);border:1px solid rgba(109,170,69,0.28);border-radius:10px;padding:var(--s4) var(--s6);margin-bottom:var(--s5);display:flex;align-items:center;gap:var(--s4);">
+    <div style="font-size:1.4rem;color:var(--success);flex-shrink:0;">✦</div>
+    <div style="flex:1;">
+      <div style="font-size:.6875rem;color:var(--success);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;">Official Investment Recommendation — Long Equity</div>
+      <div style="font-size:.9375rem;font-weight:600;color:var(--text);">LONG BLK at ~$1,001.54 &nbsp;·&nbsp; Base-case target <span style="color:var(--success);">~$1,180 (+17.8%)</span> &nbsp;·&nbsp; High conviction</div>
+    </div>
+    <a href="https://www.blackrock.com/corporate/investor-relations" target="_blank" rel="noopener" style="font-size:.6875rem;color:var(--text-faint);text-decoration:underline;text-underline-offset:2px;white-space:nowrap;flex-shrink:0;">BLK IR ↗</a>
+  </div>
   <div class="section-head"><h2>Scenario Matrix</h2><p>Bear / Base / Bull — 5-year DCF + Comparable Company Analysis</p></div>
   <div class="scenario-grid">
     <div class="s-card">
@@ -745,7 +798,10 @@ table.ctbl{width:100%;border-collapse:collapse;font-size:.8125rem}
       <div class="s-assume">20% AUM compression from market correction. HPS/GIP integration 6-month delay. Multiple de-rates to 17x fwd P/E. WACC 11.0% · g 2.0%.</div>
     </div>
     <div class="s-card base">
-      <span class="badge b-gold" style="width:fit-content;">BASE ✦ PRIMARY</span>
+      <div style="display:flex;flex-direction:column;gap:4px;width:fit-content;">
+        <span class="badge b-ok" style="width:fit-content;font-size:.75rem;padding:4px 10px;letter-spacing:.04em;">✦ BASE CASE — OUR CALL</span>
+        <span style="font-size:.6875rem;color:var(--success);font-weight:600;letter-spacing:.03em;">← Official Recommendation</span>
+      </div>
       <div class="s-price">~$1,180</div>
       <div class="s-upside s-up">+17.8% from $1,001.54</div>
       <div class="s-assume">Management guidance execution: 5–7% organic base fee growth, 16% Aladdin ACV, 44–45% adj. margins. FY2026E consensus $28.5B revenue. WACC 9.5% · g 2.5%.</div>
@@ -850,6 +906,40 @@ table.ctbl{width:100%;border-collapse:collapse;font-size:.8125rem}
       </div>
     </div>
     <p class="txt-xs txt-faint" style="margin-top:var(--s5);">BLK at ~22x adj. P/E sits between the 9.7x traditional AM floor and the 29–39x alternatives ceiling. As alternatives + technology revenue grows from ~18% toward 30%+ of total, the market will credit BLK at a platform premium. This multiple expansion is independent of AUM growth — it is a structural re-rating event driven by revenue mix.</p>
+
+    <!-- Re-Rating Catalyst Milestones -->
+    <div style="margin-top:var(--s6);border-top:1px solid var(--border);padding-top:var(--s5);">
+      <div style="font-size:.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:var(--s4);">What Has to Happen — Catalyst Milestones per Step</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);">
+        <div style="background:var(--surface-2);border:1px solid var(--border);border-left:2px solid var(--gold);border-radius:8px;padding:var(--s3) var(--s4);">
+          <div style="font-family:var(--mono);font-size:.6875rem;color:var(--gold);margin-bottom:var(--s2);">~22x → 29.5x &nbsp;(BX midpoint)</div>
+          <ul style="font-size:.75rem;color:var(--text-muted);line-height:1.6;list-style:none;padding:0;">
+            <li style="padding-left:1em;position:relative;"><span style="position:absolute;left:0;">→</span> Alternatives revenue reaches 22–25% of total (from ~18% today)</li>
+            <li style="padding-left:1em;position:relative;"><span style="position:absolute;left:0;">→</span> GIP/HPS fee ramp fully disclosed in 1–2 earnings cycles</li>
+            <li style="padding-left:1em;position:relative;"><span style="position:absolute;left:0;">→</span> Aladdin ACV sustains 16%+ organic; Preqin integration traction visible</li>
+            <li style="padding-left:1em;position:relative;"><span style="position:absolute;left:0;">→</span> Private credit cross-sell with wealth channel initiated</li>
+          </ul>
+        </div>
+        <div style="background:var(--surface-2);border:1px solid var(--border);border-left:2px solid var(--teal);border-radius:8px;padding:var(--s3) var(--s4);">
+          <div style="font-family:var(--mono);font-size:.6875rem;color:var(--teal);margin-bottom:var(--s2);">29.5x → 34x &nbsp;(midpoint path)</div>
+          <ul style="font-size:.75rem;color:var(--text-muted);line-height:1.6;list-style:none;padding:0;">
+            <li style="padding-left:1em;position:relative;"><span style="position:absolute;left:0;">→</span> Alternatives revenue crosses 27–30% of total revenue mix</li>
+            <li style="padding-left:1em;position:relative;"><span style="position:absolute;left:0;">→</span> Aladdin positioned as industry-standard private markets OS</li>
+            <li style="padding-left:1em;position:relative;"><span style="position:absolute;left:0;">→</span> Insurance channel opens materially (Fink's 2026 letter target)</li>
+            <li style="padding-left:1em;position:relative;"><span style="position:absolute;left:0;">→</span> Buy-side analysts re-categorize BLK as "alt manager with ETF scale"</li>
+          </ul>
+        </div>
+        <div style="background:var(--surface-2);border:1px solid var(--border);border-left:2px solid var(--success);border-radius:8px;padding:var(--s3) var(--s4);">
+          <div style="font-family:var(--mono);font-size:.6875rem;color:var(--success);margin-bottom:var(--s2);">34x → 39x &nbsp;(KKR ceiling)</div>
+          <ul style="font-size:.75rem;color:var(--text-muted);line-height:1.6;list-style:none;padding:0;">
+            <li style="padding-left:1em;position:relative;"><span style="position:absolute;left:0;">→</span> Alternatives revenue at 30%+ threshold (Fink 2030 target)</li>
+            <li style="padding-left:1em;position:relative;"><span style="position:absolute;left:0;">→</span> Insurance balance sheet integration (KKR/Global Atlantic model)</li>
+            <li style="padding-left:1em;position:relative;"><span style="position:absolute;left:0;">→</span> Private wealth at-scale: $500B+ in wealth channel AUM</li>
+            <li style="padding-left:1em;position:relative;"><span style="position:absolute;left:0;">→</span> Fink 2030 model implies ~$2,100/share at 14.4% IRR at this multiple</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- McKinsey thesis -->
@@ -907,7 +997,7 @@ table.ctbl{width:100%;border-collapse:collapse;font-size:.8125rem}
       <div class="proc-meta-item"><div class="proc-meta-label">Primary Sources</div><div class="proc-meta-val">25+</div></div>
       <div class="proc-meta-item"><div class="proc-meta-label">Tools Used</div><div class="proc-meta-val">Deep Research · Finance · Computer</div></div>
       <div class="proc-meta-item"><div class="proc-meta-label">Contest</div><div class="proc-meta-val">Perplexity Pitch Contest 2026</div></div>
-      <div class="proc-meta-item"><div class="proc-meta-label">Author</div><div class="proc-meta-val">Nicholas Hawkins · Hawkins Holdings</div></div>
+      <div class="proc-meta-item"><div class="proc-meta-label">Author</div><div class="proc-meta-val">Nicholas Hawkins · Texas Southern University</div></div>
     </div>
   </div>
   <div class="txt-xs txt-faint mt4 italic">Disclaimer: This dashboard is prepared for the Perplexity Pitch Contest (April 2026) and does not constitute investment advice or a solicitation to buy or sell securities. All projections are estimates based on publicly available data and analyst consensus estimates.</div>
@@ -991,7 +1081,7 @@ const TARGETS = [
 
 /* ── PROCESS STAGES ── */
 const STAGES = [
-  { badge:'Evidence Spine · 40+ Sources', yah:false,
+  { badge:'Evidence Spine · 40+ Sources ↗', yah:false, link:'https://github.com/ndhthecatalyst/Perplexity-Pitch-Contest-Blackrock-Long-Position/blob/main/SOURCES.md',
     title:'Deep Research Initiation',
     desc:'Multi-round web search establishing BLK\'s competitive position, AUM data ($14.04T FY2025), Aladdin architecture, and M&A timeline. Perplexity Search synthesized SEC filings, earnings transcripts, sell-side consensus, and press releases concurrently — returning fully cited, queryable outputs spanning the full FY2022–FY2025 period.',
     icon:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>` },
@@ -999,11 +1089,11 @@ const STAGES = [
     title:'Premium Data Pull',
     desc:'Structured financial data extraction: quarterly financials (FY2022–FY2025), segment revenue breakdown, analyst consensus estimates (19 analysts, $1,239.26 avg PT), and price history. Premium data tools surfaced real-time analyst actions including Goldman Sachs $1,181 (Apr 7) and Morgan Stanley PT cut $1,550 → $1,368 (Apr 1) — both integrated into the canonical data spine.',
     icon:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>` },
-  { badge:'3-Scenario Valuation Model', yah:false,
+  { badge:'3-Scenario Valuation Model ↗', yah:false, link:'https://github.com/ndhthecatalyst/Perplexity-Pitch-Contest-Blackrock-Long-Position/blob/main/models/BLK_DCF_Model_Hawkins_Holdings_2026.xlsx',
     title:'Financial Modeling',
     desc:'DCF model construction with explicit 5-year forecast (FY2026E–FY2029E), comparable company analysis (BX/KKR/APO/TROW re-rating peer set), and sum-of-parts valuation. Perplexity Computer executed Python calculations across all WACC and terminal growth rate permutations. Three scenario outputs: Bear ~$820, Base ~$1,180, Bull ~$1,490 — each with explicit assumption tables.',
     icon:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>` },
-  { badge:'Institutional IC Memo', yah:false,
+  { badge:'Institutional IC Memo ↗', yah:false, link:'https://github.com/ndhthecatalyst/Perplexity-Pitch-Contest-Blackrock-Long-Position/tree/main/docs',
     title:'IC Memo Drafting',
     desc:'Investment Committee memo drafted with AI-assisted synthesis of all research strands. Structured per institutional convention with 7 sections: Executive Summary, Investment Thesis, Financial Analysis, Competitive Landscape, Risk Register, Portfolio Fit, and Conclusion. Cross-document precision edits applied: GIP deal value corrected ($3B cash → ~$12.5B total), AUM badge updated ($11.6T → $14.04T), analyst actions added (Goldman, Morgan Stanley).',
     icon:`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>` },
@@ -1090,10 +1180,13 @@ function buildProcessTimeline() {
     const div = document.createElement('div');
     div.className = 'proc-stage';
     const bClass = s.yah ? 'stage-badge yah' : 'stage-badge';
+    const badgeHtml = s.link
+      ? `<a href="${s.link}" target="_blank" rel="noopener" class="${bClass}" style="text-decoration:none;">${s.badge}</a>`
+      : `<span class="${bClass}">${s.badge}</span>`;
     div.innerHTML = `
       <div class="stage-icon">${s.icon}</div>
       <div class="stage-content">
-        <div class="stage-head">${s.title}<span class="${bClass}">${s.badge}</span></div>
+        <div class="stage-head">${s.title}${badgeHtml}</div>
         <div class="stage-desc">${s.desc}</div>
       </div>`;
     el.appendChild(div);
@@ -1348,7 +1441,19 @@ function initBridge() {
       plugins:{
         legend:{display:false},
         tooltip:{
-          callbacks:{label:c=>' $'+c.raw.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})},
+          callbacks:{
+            label:c=>{
+              const upside=((c.raw-S.price)/S.price*100).toFixed(1);
+              const sign=c.raw>=S.price?'+':'';
+              const ctx={
+                'Current Price':'Entry point — April 8, 2026 close',
+                'Peer Median (~22x)':`Blended peer adj. P/E · ${sign}${upside}% from current`,
+                'DCF Intrinsic — Base':`5-yr DCF · WACC 9.5% · g 2.5% · ${sign}${upside}% upside`,
+                'Bull Case Target':`Full alt-manager re-rate (BX/KKR) · ${sign}${upside}% upside`
+              }[c.label]||'';
+              return [' $'+c.raw.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}), ctx?' → '+ctx:''];
+            },
+          },
           backgroundColor:'rgba(22,21,19,0.95)',
           bodyColor:'#e8e5df',
           borderColor:'rgba(232,229,223,0.10)',borderWidth:1
@@ -1378,6 +1483,99 @@ buildProcessTimeline();
 window._blkInit = initForTab;
 window._blkCountUp = runCountUp;
 
+
+/* ── ACQUISITION DETAIL DATA ── */
+const ACQ_DETAIL = {
+  GIP:{
+    title:'Global Infrastructure Partners',
+    date:'October 2024',
+    value:'~$12.5B ($3B cash + ~$9.5B BLK stock)',
+    headline:'Created the 2nd-largest infrastructure manager globally',
+    points:[
+      'Added ~$150B in infrastructure AUM at close — doubled to ~$170B+ by FY2025',
+      'Deal multiple: ~25–29x FY2024E P/FRE — premium pricing justified by fee-related earnings quality',
+      'Anchors BLK in renewable energy, digital infrastructure, transport, and water globally',
+      'Creates powerful cross-sell surface with iShares infrastructure ETFs ($85B+) and Aladdin risk analytics',
+    ],
+    source:{text:'ION Analytics — GIP deal announcement, Jan 2024',url:'https://ionanalytics.com/insights/infralogic/blackrock-to-acquire-gip-for-over-usd-12-5bn/'}
+  },
+  Preqin:{
+    title:'Preqin — Private Markets Data',
+    date:'March 2025',
+    value:'$3.2B (all cash)',
+    headline:'Integrates private-markets data into Aladdin — two-sided marketplace',
+    points:[
+      'Preqin is the industry-standard benchmark for PE, VC, credit, real estate, and infrastructure performance data',
+      'Larry Fink called it "our most significant acquisition" — transforms Aladdin from risk OS to data marketplace',
+      'ACV growth accelerated to +31% in FY2025 (including Preqin), vs. +16% organic — demonstrating immediate traction',
+      'Positions BLK to monetize private-markets data at near-zero marginal cost per incremental user',
+    ],
+    source:{text:'BlackRock Q4 2025 Earnings — Preqin integration update',url:'https://www.blackrock.com/corporate/newsroom/press-releases/article/corporate-one/press-releases/blackrock-reports-fourth-quarter-2025'}
+  },
+  HPS:{
+    title:'HPS Investment Partners',
+    date:'July 1, 2025',
+    value:'Stock-for-stock transaction (all-equity)',
+    headline:'$118B private credit AUM — BLK credit franchise scaled above $220B',
+    points:[
+      'HPS is one of the largest credit-focused alternative asset managers globally, with $148B total managed capital',
+      'Private credit is among the fastest-growing asset classes — institutional and wealth demand growing 15%+ annually',
+      'Combined BLK credit franchise exceeds $220B, making BLK a top-3 private credit platform globally',
+      '$91B in unfunded commitments provides a long-duration fee pipeline not yet reflected in current revenue run-rate',
+    ],
+    source:{text:'BLK 10-K FY2025 — HPS Transaction details',url:'https://www.stocktitan.net/sec-filings/BLK/10-k-black-rock-inc-files-annual-report-d280a370171b.html'}
+  },
+  FY2025:{
+    title:'FY2025 — Platform Milestone Year',
+    date:'December 31, 2025',
+    value:'$14.04T total AUM (first manager to surpass $14T)',
+    headline:'$698.3B net inflows — new annual record. Alternatives AUM reached $423.6B.',
+    points:[
+      '$527B of iShares net inflows with 12% organic asset growth and 13% organic base fee growth — record ETF year',
+      '$423.6B in alternatives AUM — up from ~$280B pre-GIP, a ~50% increase driven by three transformative acquisitions',
+      'Technology revenue reached $2.0B (+24%), ACV +31% including Preqin — Aladdin and Preqin gaining institutional traction',
+      'Adj. EPS $48.09 (+10.3%), Adj. op. margin 44.1%, $698B net inflows — all key metrics beating consensus',
+    ],
+    source:{text:'BlackRock Q4 2025 Earnings Release — Full results',url:'https://www.blackrock.com/corporate/newsroom/press-releases/article/corporate-one/press-releases/blackrock-reports-fourth-quarter-2025'}
+  }
+};
+
+function openAcqModal(key) {
+  const d = ACQ_DETAIL[key];
+  if (!d) return;
+  const el = document.getElementById('acqModalContent');
+  el.innerHTML = `
+    <div class="acq-modal-title">${d.title}</div>
+    <div class="acq-modal-meta">
+      <div class="acq-modal-kv"><span class="acq-modal-kv-label">Close Date</span><span class="acq-modal-kv-val">${d.date}</span></div>
+      <div class="acq-modal-kv"><span class="acq-modal-kv-label">Deal Value</span><span class="acq-modal-kv-val">${d.value}</span></div>
+    </div>
+    <div class="acq-modal-headline">${d.headline}</div>
+    <ul class="acq-modal-points">${d.points.map(p=>`<li>${p}</li>`).join('')}</ul>
+    <div class="acq-modal-source">
+      <a href="${d.source.url}" target="_blank" rel="noopener">↗ ${d.source.text}</a>
+    </div>`;
+  document.getElementById('acqModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAcqModal() {
+  document.getElementById('acqModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('acqModalClose').addEventListener('click', closeAcqModal);
+document.getElementById('acqModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeAcqModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAcqModal(); });
+
+// Wire acq nodes
+document.querySelectorAll('.acq-node[data-acq]').forEach(node => {
+  node.addEventListener('click', () => openAcqModal(node.dataset.acq));
+  node.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openAcqModal(node.dataset.acq); });
+});
+
 function bootDashboard() {
   initForTab('overview');
   runCountUp();
@@ -1389,5 +1587,14 @@ if (document.readyState === 'complete') {
   window.addEventListener('load', bootDashboard);
 }
 </script>
+
+<!-- Acquisition Detail Modal -->
+<div class="acq-modal-overlay" id="acqModal" role="dialog" aria-modal="true" aria-label="Acquisition detail">
+  <div class="acq-modal-box">
+    <button class="acq-modal-close" id="acqModalClose" aria-label="Close">✕</button>
+    <div id="acqModalContent"></div>
+  </div>
+</div>
+
 </body>
 </html>
